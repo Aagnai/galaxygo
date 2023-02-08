@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const admincontroller = require('../controller/adminController')
-const {adminVerifyLogin}=require('../middleware/adminVerifyLogin')
+const {adminVerifyLogin}=require('../middleware/adminVerifylogin')
 
 
 router.get('/', admincontroller.getAdminlogin)
