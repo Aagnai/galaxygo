@@ -1,0 +1,241 @@
+<%- include('../user/partials/userheader.ejs') %>
+
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-option">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="breadcrumb__text">
+          <h4>Profile</h4>
+          <div class="breadcrumb__links">
+            <a href="/" style="text-decoration: none">Home</a>
+            <span>profile</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Breadcrumb Section End -->
+
+<!-- Shop Section Begin -->
+<section class="shop spad">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-3">
+        <div class="shop__sidebar">
+          <div class="shop__sidebar__accordion">
+            <div class="accordion" id="accordionExample">
+              <div class="card">
+                <div class="breadcrumb__text">
+                  <a
+                    style="color: black; font-size: 12px; text-decoration: none"
+                    ><h5>Profile</h5></a
+                  >
+                </div>
+                <br /><br />
+                <div class="breadcrumb__text">
+                  <a
+                    href="/address"
+                    style="color: black; font-size: 12px; text-decoration: none"
+                    ><h5>Address</h5></a
+                  >
+                </div>
+                <br /><br />
+                <div class="breadcrumb__text">
+                  <a
+                    href="/wishlist"
+                    style="color: black; font-size: 12px; text-decoration: none"
+                    ><h5>Wishlist</h5></a
+                  >
+                </div>
+                <br /><br />
+                <div class="breadcrumb__text">
+                  <a
+                    href="/myOrder"
+                    style="color: black; font-size: 12px; text-decoration: none"
+                    ><h5>Orders</h5></a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-9">
+        <div class="row">
+          <h1 class="display-3">Hello, <%=userDb.name %> !</h1>
+          <p>
+            This website belongs to world's best dress brand Galaxy Go. Galaxy
+            Go the leading eCommerce Store around the Globe.Our biggest feature
+            is quality and beauty
+          </p>
+        </div>
+        <br /><br />
+
+        <div class="row">
+          <form method="post" action="/updateProfile">
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">User name</label>
+              <div class="col-sm-10">
+                <input
+                  name="name"
+                  type="text"
+                  class="form-control"
+                  placeholder="<%=userDb.name %>"
+                />
+              </div>
+            </div>
+            <br />
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Email Address</label>
+              <div class="col-sm-10">
+                <input
+                  name="email"
+                  type="email"
+                  class="form-control"
+                  placeholder="<%=userDb.email %>"
+                />
+              </div>
+            </div>
+            <br />
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Mobile Number</label>
+              <div class="col-sm-10">
+                <input
+                  type="text"
+                  readonly
+                  class="form-control-plaintext"
+                  id="staticEmail"
+                  value="<%=userDb.mobileNo %>"
+                />
+              </div>
+            </div>
+
+            <br />
+
+            <button class="btn btn-outline-warning mt-3 mt-sm-0" type="submit">
+              Update profile
+            </button>
+          </form>
+
+          <div class="form-group row">
+            <div
+              id="error"
+              style="
+                border-color: red 1px;
+                background-color: rosybrown;
+                display: none;
+              "
+            >
+              <p>Password is not matched</p>
+            </div>
+            <br />
+            <div
+              id="success"
+              style="
+                border-color: green 1px;
+                background-color: lightseagreen;
+                display: none;
+              "
+            >
+              <p>Password is Changed</p>
+            </div>
+            <br />
+            <div class="form-group row">
+              <form id="reset" class="px-0">
+                <label for="inputPassword" class="col-sm-2 col-form-label py-3">
+                  Old Password</label
+                >
+                <div class="col-sm-10">
+                  <input
+                    type="password"
+                    class="form-control w-50 mb-4"
+                    name="nPassword"
+                    id="inputPassword"
+                    placeholder="Password"
+                  />
+                  <input
+                    type="submit"
+                    class="btn btn-outline-warning mt-3 mt-sm-0"
+                    value="reset"
+                  />
+                </div>
+              </form>
+            </div>
+            <br />
+            <div class="form-group row">
+              <form id="new" class="px-0">
+                <div class="col-sm-10">
+                  <input
+                    type="password"
+                    class="form-control w-50 mt-4 mb-4"
+                    id="newPassword"
+                    name="nPassword"
+                    placeholder="New Password"
+                    hidden
+                  />
+                  <!-- <br /> -->
+                  <input
+                    type="submit"
+                    class="btn btn-outline-warning mt-3 mt-sm-0"
+                    id="newPasswordbtn"
+                    value="Change"
+                    hidden
+                  />
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Shop Section End -->
+
+<%- include('../user/partials/userfooter.ejs') %>
+
+<script>
+  $("#reset").submit((e) => {
+    e.preventDefault();
+    console.log($("#reset").serialize());
+    $.ajax({
+      url: "/checking",
+      method: "post",
+      data: $("#reset").serialize(),
+      success: (res) => {
+        console.log(res);
+        if (res.stat) {
+          console.log("in");
+          document.getElementById("newPassword").hidden = false;
+          document.getElementById("newPasswordbtn").hidden = false;
+        } else {
+          document.getElementById("error").style.display = "block";
+          setTimeout(
+            () => (document.getElementById("error").style.display = "none"),
+            2000
+          );
+        }
+      },
+    });
+  });
+  $("#new").submit((e) => {
+    e.preventDefault();
+
+    $.ajax({
+      url: "/updatePassword",
+      method: "post",
+      data: $("#new").serialize(),
+      success: (res) => {
+        if (res.status) {
+          document.getElementById("success").style.display = "block";
+          setTimeout(
+            () => (document.getElementById("success").style.display = "none"),
+            2000
+          );
+        }
+      },
+    });
+  });
+</script>

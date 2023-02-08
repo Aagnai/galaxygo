@@ -1,0 +1,171 @@
+
+
+<div class="container px-6 mx-auto grid">
+  <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+    Orders
+  </h2>
+
+  <!-- Orders Table start -->
+  <div class="w-full overflow-hidden rounded-lg shadow-xs">
+    <div class="w-full overflow-x-auto">
+      <table id="table" class="w-full whitespace-no-wrap">
+        <thead>
+          <tr
+            class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
+          >
+            <th class="px-4 py-3">Client</th>
+            <!-- <th class="px-4 py-3">Order Id</th> -->
+            <th class="px-4 py-3">paymentMethod</th>
+            <th class="px-4 py-3">Amount</th>
+            <th class="px-4 py-3">Order Status</th>
+            <th class="px-4 py-3">Date</th>
+            <th class="px-4 py-3">Details</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+          <% for( let i = 0; i < order.length; i++ ) { %>
+
+          <tr class="text-gray-700 dark:text-gray-400">
+            <td class="px-4 py-3">
+              <div class="flex items-center text-sm">
+                <!-- Avatar with inset shadow -->
+                <div>
+                  <p class="font-semibold"><%= order[i].userId.name %></p>
+                </div>
+              </div>
+            </td>
+            <!-- <td class="px-4 py-3 text-sm">< %= order[i]._id %></td> -->
+            <td class="px-4 py-3 text-sm"><%= order[i].paymentMethod %></td>
+            <td class="px-4 py-3 text-sm">₹ <%= order[i].total %></td>
+            <td class="px-4 py-3 text-xs">
+              <% if (order[i].orderStatus != "Cancelled"&&order[i].orderStatus
+              != "Returnd"&&order[i].orderStatus != "Delivered" ) { %>
+              <select
+                class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
+                name="track"
+                id="track<%= i %>"
+              >
+                <option value="<%= order[i].orderStatus %>" selected>
+                  <%= order[i].orderStatus %>
+                </option>
+
+                <option value="Cancelled">Cancelled</option>
+                <option value="orderconfirmed">orderconfirmed</option>
+                <option value="Shipped">Shipped</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Out For Delivery">Out For Delivery</option>
+              </select>
+              <!-- <td class="px-4 py-3 text-sm"> -->
+              <button
+                class="px-4 py-3 text-sm"
+                type="button"
+                id="changetrack"
+                class="btn btn-sm"
+                onclick="orderStatus('<%= order[i]._id %>','<%= i %>')"
+              >
+                <span
+                  class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
+                >
+                  Update
+                </span>
+              </button>
+
+              <% }else if (order[i].orderStatus == "Delivered" ) { %>
+              <span
+                class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
+              >
+                <%= order[i].orderStatus %>
+              </span>
+              <% }else{ %>
+              <span
+                class="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-700"
+              >
+                <%= order[i].orderStatus %>
+              </span>
+
+              <% } %>
+              <!-- </td> -->
+            </td>
+
+            <td class="px-4 py-3 text-sm">
+              <%= order[i].updatedAt.toLocaleDateString() %>,<%= order[i].time
+              %>
+            </td>
+            <td class="px-4 py-3 text-xs">
+              <a href="/admin/orderDetails/<%= order[i]._id %>">
+                <button>
+                  <span
+                    class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
+                  >
+                    view
+                  </span>
+                </button>
+              </a>
+            </td>
+          </tr>
+          <% } %>
+          <!--  -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- Orders Table end -->
+</div>
+
+<script
+  type="text/javascript"
+  src="https://code.jquery.com/jquery-1.7.1.min.js"
+></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+  integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+<script>
+  function orderStatus(e, i) {
+    console.log("order status vannu");
+    const orderId = e;
+    const value = $(`#track${i}`).find(":selected").val();
+    console.log(orderId, value);
+
+    $.ajax({
+      url: "/admin/orderStatus",
+      data: {
+        orderId,
+        value,
+      },
+      method: "post",
+      success: (response) => {
+        if (response.status) {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 1000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+
+          Toast.fire({
+            icon: "success",
+            title: "order statuse has been changed",
+          }).then(() => {
+            // location.href = "/admin/orders";
+            window.location.reload();
+          });
+        }
+      },
+    });
+  }
+</script>
+
+<script>
+  $(document).ready(function () {
+    $("#table").DataTable();
+  });
+</script>

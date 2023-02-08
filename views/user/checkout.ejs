@@ -1,0 +1,490 @@
+<%- include('../user/partials/userheader.ejs') %>
+
+<!-- Checkout Section Begin -->
+<section class="checkout spad">
+  <div class="container">
+    <div class="checkout__form">
+      <form
+        method="post"
+        id="checkout-form"
+        class="colorlib-form"
+        novalidate="novalidate"
+      >
+        <h2>Billing Details</h2>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="fname"> Name</label>
+              <input
+                type="text"
+                id="fname"
+                class="form-control"
+                value="<%= user.name %> "
+                disabled
+              />
+            </div>
+          </div>
+        </div>
+        <label for="address">Choose Address</label>
+        <div class="accordion" id="accordionExample">
+          <% for( let i = 0; i < address.length; i++ ) { %>
+
+          <div class="card">
+            <div class="card-header" id="headingOne">
+              <% if (i==0) { %>
+              <label
+                ><input
+                  type="radio"
+                  id="<%= address[i]._id %>"
+                  value="<%= address[i]._id %>"
+                  name="address"
+                  checked
+                />Select address</label
+              >
+              <% } else { %>
+              <label
+                ><input
+                  type="radio"
+                  id="<%= address[i]._id %>"
+                  value="<%= address[i]._id %>"
+                  name="address"
+                />Select address</label
+              >
+              <% } %>
+              <h2 class="mb-0">
+                <button
+                  class="btn btn-link btn-block text-left"
+                  type="button"
+                  data-toggle="collapse"
+                  data-target="#collapseOne<%= address[i]._id %>"
+                  aria-expanded="true"
+                  aria-controls="collapseOne"
+                >
+                  <%= address[i].fName %>
+                </button>
+              </h2>
+            </div>
+
+            <div
+              id="collapseOne<%= address[i]._id %>"
+              class="collapse"
+              name="addressLine"
+              aria-labelledby="headingOne"
+              data-parent="#accordionExample"
+            >
+              <div class="card-body">
+                Address: <%= address[i].addressLine %>, <%= address[i].city %>,
+                <%= address[i].state %>, <%= address[i].pincode %> , <%=
+                address[i].country %>
+              </div>
+            </div>
+          </div>
+          <% } %>
+        </div>
+        <div class="mt-3">
+          <a
+            class="addtocart btn btn-outline-primary btn-addtocart"
+            href="/address"
+          >
+            Add New Address
+          </a>
+        </div>
+        <div class="col-md-12">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="email">E-mail Address</label>
+              <input
+                type="text"
+                id="email"
+                name="email"
+                class="form-control"
+                value="<%= user.email %>"
+                disabled
+              />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="Phone">Phone Number</label>
+              <input
+                type="text"
+                id="zippostalcode"
+                name="number"
+                class="form-control"
+                value="<%= user.mobileNo %>"
+                disabled
+              />
+            </div>
+          </div>
+
+          <div class="col-md-12"></div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="row">
+            <!--  -->
+            <div class="col-md-12">
+              <div class="row form-group">
+                <div class="col-sm-9">
+                  <input
+                    type="text"
+                    name="couponCod"
+                    id="couponInput"
+                    class="form-control input-number"
+                    placeholder="Your Coupon Number..."
+                  />
+                </div>
+                <p class="pl-5" id="CouponError"></p>
+                <div class="col-sm-3 mt-3">
+                  <input
+                    type="button"
+                    onclick="applyCoupon('<%= cartItems.cartTotal%>')"
+                    style="display: block"
+                    id="applyBtn"
+                    value="Apply Coupon"
+                    class="btn btn-outline-primary"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!--  -->
+
+            <div class="col-md-12">
+              <div class="cart-detail">
+                <h2>Cart Total</h2>
+                <ul>
+                  <li>
+                    <ul>
+                      <% for ( cart of cartItems.items) { %>
+                      <li>
+                        <span>
+                          <%= cart.quantity %> x <%= cart.product.name %>
+                        </span>
+                        <span>₹<%= cart.totalPrice %></span>
+                      </li>
+
+                      <% } %>
+                    </ul>
+                  </li>
+                  <li>
+                    <span>Sub Total</span>
+                    <span
+                      ><input
+                        type="text"
+                        name="subtotal"
+                        id="totalAmount"
+                        class="form-control"
+                        value="<%= cartItems.cartTotal%>"
+                        hidden
+                      />₹<%= cartItems.cartTotal%></span
+                    >
+                  </li>
+
+                  <li><span>Shipping</span> <span>FREE</span></li>
+                  <li>
+                    <span>Discount</span> <span id="discountAmount">Nil</span>
+                  </li>
+
+                  <li>
+                    <span>Order Total</span>
+                    <span id="grandTotalAmount"
+                      >₹<%= cartItems.cartTotal%></span
+                    >
+                  </li>
+                  <input
+                    type="text"
+                    name="total"
+                    id="grandTotal"
+                    class="form-control"
+                    value="<%= cartItems.cartTotal%>"
+                    hidden
+                  />
+                </ul>
+              </div>
+            </div>
+
+            <div class="w-100"></div>
+
+            <div class="col-md-12">
+              <div class="cart-detail">
+                <h2>Payment Method</h2>
+
+                <div class="form-group">
+                  <div class="col-md-12">
+                    <div class="radio">
+                      <label
+                        ><input
+                          class="mr-2"
+                          type="radio"
+                          id="Cash-On-Delivery"
+                          value="cash on delivery"
+                          name="paymentMethod"
+                        />Cash on Delivery</label
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-md-12">
+                    <div class="radio">
+                      <label
+                        ><input
+                          class="mr-2"
+                          type="radio"
+                          id="Razorpay"
+                          value="Razorpay"
+                          name="paymentMethod"
+                        />
+                        Razorpay</label
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <input
+                  type="text"
+                  name="cartId"
+                  id="cartId"
+                  value="<%= cartItems._id %>"
+                  hidden
+                />
+                <div class="form-group"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12 text-center">
+              <button type="submit" class="btn btn-outline-primary">
+                Place an order
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+<!-- Checkout Section End -->
+
+<%- include('../user/partials/userfooter.ejs') %>
+
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+  integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+<!-- sweet alert -->
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+  var CouponCode;
+  function applyCoupon(subtotal) {
+    CouponCode = document.getElementById("couponInput").value;
+
+    let total = subtotal;
+    if (CouponCode == "") {
+      document.getElementById("CouponError").style.color = "red";
+      document.getElementById("CouponError").innerHTML = "Enter a Coupon Code";
+    } else {
+      $.ajax({
+        url: "/verifyCoupon",
+        method: "post",
+        data: {
+          CouponCode,
+          total,
+        },
+        success: (response) => {
+          if (response.status == true) {
+            document.getElementById("CouponError").style.color = "green";
+            document.getElementById("CouponError").innerHTML = "Coupon Applied";
+            document.getElementById("discountAmount").innerHTML =
+              "Rs." + response.CutOff;
+            document.getElementById("grandTotalAmount").innerHTML =
+              response.grandtotal;
+            document.getElementById("grandTotal").value = response.grandtotal;
+            document.getElementById("applyBtn").style.display = "none";
+          } else {
+            document.getElementById("CouponError").style.color = "red";
+            document.getElementById("CouponError").innerHTML =
+              response.couponMsg;
+          }
+        },
+      });
+    }
+  }
+
+  let userOrderData;
+  $("#checkout-form").submit((e) => {
+    e.preventDefault();
+
+    let couponAmount = document.getElementById("discountAmount").innerText;
+    let cartId = document.getElementById("cartId").value;
+
+    $.ajax({
+      url: "/checkout/" + cartId,
+      method: "post",
+      data: $("#checkout-form").serialize(),
+      couponAmount,
+      success: (response) => {
+        if (response.choosePay) {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+
+          Toast.fire({
+            icon: "error",
+            title: "please choose  your payment",
+          });
+        } else if (response.chooseAddress) {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+
+          Toast.fire({
+            icon: "error",
+            title: "must add your delivery address",
+          });
+        }
+
+        if (response.cashOnDelivery) {
+          Swal.fire({
+            title: "Order Placed Successfully",
+            icon: "success",
+            showDenyButton: false,
+            confirmButtonText: " Order Successfully",
+            // denyButtonText: `Continue Shopping`,
+            toast: true,
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+              location.href = "/order-complete";
+            }
+          });
+        } else if (response.Razorpay) {
+          console.log("test ok");
+          let razorpayoderData = response.razorpayoderData;
+          userOrderData = response.userOrderData;
+          walletBalance = response.walletBalance;
+          var options = {
+            key: "rzp_test_VZx01l8lO0abIf", // Enter the Key ID generated from the Dashboard
+            amount: response.razorpayOrderData.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            currency: "INR",
+            name: "Toft",
+            description: "Test Transaction",
+            image: "https://example.com/your_logo",
+            order_id: response.razorpayOrderData.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            handler: function (response) {
+              console.log(response, "????????????????????????????????????????");
+                alert(response.razorpay_payment_id);
+                alert(response.razorpay_order_id);
+                alert(response.razorpay_signature);
+              verifyPayment(response);
+            },
+            prefill: {
+              name: "Gaurav Kumar",
+              email: "gaurav.kumar@example.com",
+              contact: "9999999999",
+            },
+            notes: {
+              address: "Razorpay Corporate Office",
+            },
+            theme: {
+              color: "#3399cc",
+            },
+          };
+          console.log(options);
+          var rzpl = new Razorpay(options);
+          rzpl.on("payment.failed", function (response) {
+            paymentFailed(response);
+          });
+          rzpl.open();
+        }
+      },
+    });
+  });
+
+    let Couponcode = document.getElementById("couponInput").value;
+
+  console.log(CouponCode, "veryfy payment");
+  function verifyPayment(payment, razorpayOrderData) {
+    console.log(razorpayOrderData, "orderrrrrrrrrrrrrrrrrrr dataaaaaaaaa");
+
+    $.ajax({
+      url: "/verifyPayment",
+      data: {
+        payment,
+        razorpayOrderData,
+        userOrderData,
+        CouponCode,
+        walletBalance,
+      },
+      method: "post",
+
+      success: (response) => {
+        if (response.status) {
+          Swal.fire({
+            title: "Order Placed Successfully",
+            icon: "success",
+            showDenyButton: false,
+            confirmButtonText: "View Order",
+            denyButtonText: `Continue Shopping`,
+            toast: true,
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+              location.href = "/order-complete";
+            } else if (result.isDenied) {
+              location.href = "/";
+            }
+          });
+        }
+      },
+    });
+  }
+
+  function paymentFailed(response) {
+    $.ajax({
+      url: "/paymentFailed",
+      data: response,
+      method: "post",
+      success: (response) => {
+        if (response.status) {
+          Swal.fire({
+            title: "Payment Failed !",
+            icon: "error",
+            showDenyButton: false,
+            toast: true,
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+              location.href = "/";
+            } else if (result.isDenied) {
+              location.href = "/";
+            }
+          });
+        }
+      },
+    });
+  }
+</script>

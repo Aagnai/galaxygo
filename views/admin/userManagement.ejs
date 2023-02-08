@@ -1,0 +1,120 @@
+<%- include('../admin/partials/adminheader.ejs') %>
+
+
+
+  <!-- Table Start -->
+  <div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+      <div class="col-2"></div>
+      <div class="col-10">
+        <div class="bg-secondary rounded h-100 p-4">
+          <h6 class="mb-4">Users Table</h6>
+          <div class="table-responsive">
+            <div class="table container p-5">
+              <table
+                id="myTable"
+                class="table table-striped table-bordered table-responsive table-hover"
+              >
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <!-- <th scope="col">Full Name</th> -->
+                    <th scope="col">User Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% users.forEach((user,i) => { %>
+                  <tr>
+                    <td><%= i+1 %></td>
+
+                    <td><%= user.name %></td>
+                    <td><%= user.email %></td>
+                    <td><%= user.mobileNo %></td>
+                    <td>
+                      <% if (user.access ) { %>
+                      <p class="text-success">Non blocked</p>
+                      <% } else { %>
+                      <p class="text-warning">Banned</p>
+                      <% } %>
+                    </td>
+                    <td>
+                      <div class="d-flex flex-lg-row justify-content-center">
+                        <% if (user.access==true ) { %>
+                        <form
+                          action="/admin/blockUser/<%= user._id %>"
+                          method="post"
+                        >
+                          <button
+                            type="submit"
+                            class="btn btn-outline-warning"
+                            style="width: 110px"
+                          >
+                            Block
+                          </button>
+                        </form>
+                        <% } else { %>
+                        <form
+                          action="/admin/unBlockUser/<%= user._id %> "
+                          method="post"
+                        >
+                          <button type="submit" class="btn btn-outline-success">
+                            unblock
+                          </button>
+                        </form>
+                        <% } %>
+                        <br />
+                        <a onclick="deleteUser('<%= user._id %>')"
+                          ><button type="button" class="btn btn-outline-danger">
+                            Delete
+                          </button></a
+                        >
+                      </div>
+                    </td>
+                  </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table End -->
+
+
+<script>
+  function deleteUser(id) {
+    console.log(id);
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.delete(`/admin/userDelete?id=${id}`).then((result) => {
+          if (result.data) {
+            Swal.fire(
+              "Deleted!",
+              "Your user has been deleted.",
+              "success"
+            ).then(() => {
+              location.reload();
+            });
+          } else {
+            alert("wrong!");
+          }
+        });
+      }
+    });
+  }
+</script>

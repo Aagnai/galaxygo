@@ -1,0 +1,183 @@
+<%- include('../user/partials/userheader.ejs') %>
+
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-option">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="breadcrumb__text">
+          <h4>Shop</h4>
+          <div class="breadcrumb__links">
+            <a href="/" style="text-decoration: none">Home</a>
+            <span>Shop</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Breadcrumb Section End -->
+
+<!-- Shop Section Begin -->
+<section class="shop spad">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-3">
+        <div class="shop__sidebar">
+          <div class="shop__sidebar__search">
+            <form action="#">
+              <input type="text" placeholder="Search..." />
+              <button type="submit"><span class="icon_search"></span></button>
+            </form>
+          </div>
+          <div class="shop__sidebar__accordion">
+            <div class="accordion" id="accordionExample">
+              <div class="card">
+                <div class="card-heading">
+                  <a data-toggle="collapse" data-target="#collapseOne"
+                    >Categories</a
+                  >
+                </div>
+                <div
+                  id="collapseOne"
+                  class="collapse show"
+                  data-parent="#accordionExample"
+                >
+                  <div class="card-body">
+                    <div class="shop__sidebar__categories">
+                      <ul class="nice-scroll">
+                        <%for(var i = 0 ;i<newCategories.length;i++){%>
+                        <li>
+                          <a
+                            style="text-decoration: none"
+                            href="/productShow/<%=newCategories[1]._id%>"
+                          >
+                            <%=newCategories[i].title%>
+                          </a>
+                        </li>
+                        <%}%>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-9">
+        <div class="row">
+          <% newproducts.forEach(function(productList,index){ %>
+          <div class="col-lg-4 col-md-6 col-sm-6">
+            <div class="product__item">
+              <div class="product__item__pic set-bg">
+                <a href="/productDetails/<%= productList._id%>"
+                  ><img
+                    width="300"
+                    height="300"
+                    src="<%= productList.productImage[0] %>"
+                    alt=""
+                /></a>
+                <ul class="product__hover">
+                  <% if(wish){ %> <% let wishes =
+                  wish.items.some((item)=>item.product.toString() ===
+                  productList._id.toString() ) %> <% if(wishes){ %>
+                  <i
+                    id="<%= productList._id %>"
+                    style="color: red"
+                    class="fa-solid fa-heart"
+                    onclick="addToWishlist('<%= productList._id%>')"
+                  ></i>
+                  <% } else{ %>
+                  <i
+                    id="<%= productList._id %>"
+                    style="color: grey"
+                    class="fa-solid fa-heart"
+                    onclick="addToWishlist('<%= productList._id%>')"
+                  ></i>
+                  <% } %> <% } else{ %>
+                  <i
+                    id="<%= productList._id %>"
+                    style="color: grey"
+                    class="fa-solid fa-heart"
+                    onclick="addToWishlist('<%= productList._id%>')"
+                  ></i>
+                  <%} %>
+
+                  <!-- <li><a onclick="addToWishlist('< %= productList._id%>')"><img src="img/icon/heart.png" alt=""></a></li> -->
+                </ul>
+              </div>
+              <div class="product__item__text">
+                <h6><%=productList.name %></h6>
+                <a
+                  onclick="addToCart('<%= productList._id%>')"
+                  class="add-cart btn_1"
+                  >+ Add To Cart</a
+                >
+                <h5>₹ :<%=productList.price %></h5>
+              </div>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+        <sect class="row">
+          <div class="col-lg-12">
+            <!-- <div class="product__pagination">
+                                < % if(curentPage!=1&&PreviousPage!=1){%> 
+                                <a href="/shop?page=1">1</a>
+                                < % } %> 
+                                <a href="/shop?page=< %=curentPage%>" class="active">< %=curentPage%> </a>
+                                < % if(hasPreviousPage){%> 
+                                    <a href="/shop?page=< %= PreviousPage%>" class="active">< %= PreviousPage%> </a>
+                                    < % } %> 
+                                    < % if(hasNextPage){%>
+                                        <a href="/shop?page=< %=nextPage%>" class="active">< %=nextPage%> </a>
+                                        < % } %> 
+                            </div> -->
+          </div>
+        </sect>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Shop Section End -->
+
+<%- include('../user/partials/userfooter.ejs') %>
+
+<script>
+  async function addToCart(id) {
+    console.log("id check : ", id);
+    await axios.post(`/addcart/${id}`).then((data) => {
+      console.log(data);
+      Swal.fire({
+        icon: "success",
+        position: "top-end",
+        title: "added to cart",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    });
+  }
+</script>
+<script>
+  async function addToWishlist(id) {
+    console.log("id wish check : ", id);
+    await axios.post(`/addWishlist/${id}`).then((data) => {
+      console.log(data);
+      if (data.data == "LOGIN") {
+        console.log("if");
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong!",
+          footer: '<a href="/log">login first</a>',
+        });
+      }
+      if (data.data.remove) {
+        document.getElementById(id).style.color = "grey";
+      } else {
+        document.getElementById(id).style.color = "red";
+      }
+    });
+  }
+</script>

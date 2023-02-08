@@ -1,0 +1,49 @@
+<%- include('../admin/partials/adminheader.ejs') %>
+<div class="container-fluid  pt-4 px-4" >
+    <div class="row g-4">
+        <div class="  col-xl-2">
+
+        </div>
+      
+        <div class="col-sm-12   col-xl-6">
+          
+            <form action="/admin/editCategory/<%= oneUser._id %>" method="post" enctype="multipart/form-data">
+               
+                <div class="form-outline mb-4">
+                  <select class="form-select" name="title" id="floatingSelect"
+                    aria-label="Floating label select example">
+                    <option selected>select</option>
+                    <option value="Shirt">Shirt</option>
+                    <option value="T-shirt">T-shirt</option>
+                    <option value="Jeans">Jeans</option>
+                    <option value="Trousers">Trousers</option>
+                    <option value="Jackets">Jackets</option>
+                    <option value="Blazers & coats">Blazers & coats</option>
+                    <option value="Briefs & Trunks">Briefs & Trunks</option>
+                    <option value="Boxers">Boxers</option>
+                  
+                  <label class="form-label" for="form4Example1">CategoryName</label>
+                </div>
+              
+              
+             
+
+                <img src="<%= oneUser.categoryImage[0] %> " id="imgView" class="mb-3" width="100px" height="auto" alt="">
+                <div class="form-outline mb-4">
+                  <input type="file" name="categoryImage" id="image" onchange="viewImage(event)" class="form-control" />
+                  <label class="form-label" for="form4Example1">Image</label>
+                </div>
+              
+              
+                <button type="submit" class="btn btn-primary btn-block mb-4">Update</button>
+              </form>
+            </div>
+            </div>
+        </div>
+
+        <script>
+          function viewImage(e){
+            document.getElementById('imgView').src = URL.createObjectURL(e.target.files[0])
+            
+          }
+        </script>

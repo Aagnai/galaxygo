@@ -1,0 +1,84 @@
+<%- include('../admin/partials/adminheader.ejs') %>
+
+<main class="h-full pb-16 overflow-y-auto">
+
+    <div class="container px-6 mx-auto grid">
+      <h2
+      class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
+      >
+      Order details
+    </h2>
+
+<div class="grid gap-6 mb-8 md:grid-cols-2 mt-4">
+    <div class="min-w-0 p-4 text-white rounded-lg shadow-xs dark:bg-gray-800">
+      <h4 class="mb-4 font-semibold text-gray-600 dark:text-gray-300">Order Details</h4>
+      <p class="text-gray-600 dark:text-gray-400">
+        <!-- Tracking Id: <span class="font-semibold dark:text-gray-300" id="tracking_id"><%= order.id %></span><br /> -->
+        Order Number: <span class="font-semibold dark:text-gray-300" id="order_number"><%= order.id %></span><br />
+        Date: <span class="font-semibold dark:text-gray-300" id="order_date"><%= order.updatedAt.toLocaleDateString() %></span><br />
+        Payment Staus: <span class="font-semibold dark:text-gray-300" id="order_amount"><%= order.paymentStatus %></span><br />
+        <% if (order.couponDiscount >0) { %>
+        Coupon Discount: <span class="font-semibold dark:text-gray-300" id="order_amount"><%= order.couponDiscount %></span><br />
+        <% } %>
+        <% if (order.useWallet>0) { %>
+          Via Wallet: <span class="font-semibold dark:text-gray-300" id="order_amount"><%= order.useWallet %></span><br />
+        <% } %>
+        Amount: <span class="font-semibold dark:text-gray-300" id="order_amount"><%= order.total %></span><br />
+
+      </p>
+    </div>
+    <div class="min-w-0 p-4 text-white rounded-lg shadow-xs dark:bg-gray-800">
+      <h4 class="mb-4 font-semibold text-gray-600 dark:text-gray-300">Shipping Address</h4>
+      <p class="text-gray-600 dark:text-gray-400">
+        Address Name: <span class="font-semibold dark:text-gray-300" id="add_home"><%= order.address.fName %> </span><br />
+        City: <span class="font-semibold dark:text-gray-300" id="add_city"><%= order.address.city %> </span><br />
+        Address Line: <span class="font-semibold dark:text-gray-300" id="add_district"><%= order.address.addressLine %> </span><br />
+        State: <span class="font-semibold dark:text-gray-300" id="add_state"><%= order.address.state %> </span><br />
+        Country: <span class="font-semibold dark:text-gray-300" id="add_state"><%= order.address.country %> </span><br />
+        Pincode: <span class="font-semibold dark:text-gray-300" id="add_pin"><%= order.address.pincode %> </span><br />
+      </p>
+    </div>
+  </div>
+
+  <!-- product details table -->
+  <div class="w-full overflow-x-auto mt-4">
+    <h4 class="mb-4 font-semibold text-gray-600 dark:text-gray-300">Product Details</h4>
+    <table class="w-full whitespace-no-wrap">
+      <thead>
+        <tr
+          class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
+        >
+          <!-- <th class="px-4 py-3">#</th> -->
+          <th class="px-4 py-3 ">product Name</th>
+          <th class="px-4 py-3">Quantity</th>
+          <th class="px-4 py-3">Total</th>
+        </tr>
+      </thead>
+      <tbody id="table_body13" class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+        <% for( let i = 0; i < order.products.length; i++ ) { %>
+                            
+          <tr   class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
+          >
+              <td class="px-4 py-3" >
+                  <p><%= order.products[i].product.name %></p>
+              </td >
+              <td class="px-4 py-3">
+                  <h5>x<%= order.products[i].quantity %></h5>
+              </td>
+              <td class="px-4 py-3">
+                  <p>Rs:<%= order.products[i].totalPrice %></p>
+              </td>
+          </tr>
+          <%} %>
+
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!--  -->
+</div>
+</main>
+
+

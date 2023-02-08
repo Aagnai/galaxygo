@@ -1,0 +1,181 @@
+<%- include('../user/partials/userheader.ejs') %>
+
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-option">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="breadcrumb__text">
+          <h4>Orders</h4>
+          <div class="breadcrumb__links">
+            <a href="/" style="text-decoration: none">Home</a>
+            <span>Orders</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Breadcrumb Section End -->
+
+<!-- Shop Section Begin -->
+<section class="shop spad">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-3">
+        <div class="shop__sidebar">
+          <div class="shop__sidebar__accordion">
+            <div class="accordion" id="accordionExample">
+              <div class="card">
+                <div class="breadcrumb__text">
+                  <a
+                    style="color: black; font-size: 12px; text-decoration: none"
+                    ><h5>Profile</h5></a
+                  >
+                </div>
+                <br /><br />
+                <div class="breadcrumb__text">
+                  <a
+                    href="/address"
+                    style="color: black; font-size: 12px; text-decoration: none"
+                    ><h5>Address</h5></a
+                  >
+                </div>
+                <br /><br />
+                <div class="breadcrumb__text">
+                  <a
+                    href="/wishlist"
+                    style="color: black; font-size: 12px; text-decoration: none"
+                    ><h5>Wishlist</h5></a
+                  >
+                </div>
+                <br /><br />
+                <div class="breadcrumb__text">
+                  <a
+                    href="/myOrder"
+                    style="color: black; font-size: 12px; text-decoration: none"
+                    ><h5>Orders</h5></a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-9">
+        <section class="login_part padding_top mt-5">
+          <div class="container">
+            <div class="jumbotron">
+              <div class="container">
+                <section class="cart_area mt-5">
+                  <div class="container">
+                    <% if(orders.length>0) { %>
+                    <h2>My Orders</h2>
+                    <div class="cart_inner">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th scope="col">Order ID</th>
+                              <th scope="col">Date</th>
+                              <th scope="col">Amount</th>
+                              <th scope="col">Order Status</th>
+                              <th scope="col"></th>
+                              <th scope="col"></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <% for (Order of orders) { %>
+                            <tr>
+                              <td>
+                                <p><%=Order.id%></p>
+                              </td>
+                              <td>
+                                <p>
+                                  <%=Order.updatedAt.toLocaleDateString() %>
+                                </p>
+                              </td>
+                              <td>
+                                <p>Rs.<span><%=Order.total%></span></p>
+                              </td>
+                              <td>
+                                <% if (Order.orderStatus=="Cancelled") { %>
+                                <p>
+                                  <span style="color: red"
+                                    ><%=Order.orderStatus%></span
+                                  >
+                                </p>
+
+                                <% } else if (Order.orderStatus=="Returnd") { %>
+                                <p>
+                                  <span style="color: red"
+                                    ><%=Order.orderStatus%></span
+                                  >
+                                </p>
+
+                                <% }else {%>
+                                <p>
+                                  <span style="color: green"
+                                    ><%=Order.orderStatus%></span
+                                  >
+                                </p>
+
+                                <% } %>
+                              </td>
+                              <td>
+                                <div class="col-sm-12 text-center">
+                                  <a
+                                    href="/orderDetails?id=<%=Order.id%>"
+                                    class="addtocart btn btn-outline-dark btn-addtocart"
+                                  >
+                                    View
+                                  </a>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr></tr>
+                            <% } %>
+                          </tbody>
+                        </table>
+                        <hr />
+                        <% }else{ %>
+                        <div class="container">
+                          <div class="row text-center">
+                            <div class="col-md-12 mt-5">
+                              <div>
+                                <img
+                                  src="/productImages/678caef6068a976e4a0d94bbdba6b660.webp"
+                                  alt=""
+                                  width="50%"
+                                />
+                                <h2 style="color: red">No Order yet</h2>
+                              </div>
+                              <div>
+                                <a class="btn btn-success my-3" href="/"
+                                  >Start Shopping</a
+                                >
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <% } %>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+
+            <div class="container text-center mt-5">
+              <a class="btn btn-primary" href="/">Go back to Shopping</a>
+            </div>
+            <br /><br /><br /><br />
+          </div>
+        </section>
+        <!-- Shop Section End -->
+
+        <%- include('../user/partials/userfooter.ejs') %>
+      </div>
+    </div>
+  </div>
+</section>

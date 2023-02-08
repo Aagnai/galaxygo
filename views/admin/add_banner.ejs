@@ -1,0 +1,72 @@
+<%- include('../admin/partials/adminheader.ejs') %>
+<div class="col-2"></div>
+<div class="col-10">
+  <div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+      <div class="col-sm-12 col-xl-6">
+        <div class="bg-secondary rounded h-100 p-4">
+          <h6 class="mb-4">Add Banner</h6>
+          <form
+            action="/admin/banner"
+            method="post"
+            enctype="multipart/form-data"
+          >
+            <% if(bannerAddErr.length>0){ %>
+            <div
+              class="alert alert-danger col-md-12 text-center"
+              style="color: white; background-color: rgb(221, 118, 118)"
+              role="alert"
+            >
+              <p class="text-danger"><%=bannerAddErr %></p>
+            </div>
+            <% } %>
+
+            <div class="mb-3">
+              <label for="exampleInputEmail1" class="form-label">Heading</label>
+              <input name="head1" type="text" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+              <label for="exampleInputEmail1" class="form-label"
+                >Sub Heading</label
+              >
+              <input name="head2" type="text" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+              <label for="exampleInputEmail1" class="form-label">URL</label>
+              <input name="route" type="text" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+              <label for="formFile" class="form-label">Image file</label>
+              <input
+                class="form-control bg-dark"
+                name="imageUrl"
+                type="file"
+                id="formFile"
+              />
+            </div>
+
+            <br />
+
+            <div class="form-floating">
+              <textarea
+                name="description"
+                class="form-control"
+                placeholder="Type description"
+                id="floatingTextarea"
+                style="height: 150px"
+              ></textarea>
+              <label for="floatingTextarea">Description</label>
+            </div>
+
+            <br /><br />
+
+            <button type="submit" class="btn btn-primary">Add Banner</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

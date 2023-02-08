@@ -1,0 +1,246 @@
+<section
+  class="vh-100 bg-image"
+  style="
+    background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');
+  "
+>
+  <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+    <div class="container h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+          <div class="card" style="border-radius: 15px">
+            <div class="card-body p-5">
+              <h2 class="text-uppercase text-center mb-5">Create an account</h2>
+
+              <form action="/register" method="post" id="signupForm">
+                <div class="form-outline mb-4">
+                  <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    class="form-control form-control-lg"
+                  />
+                  <label class="form-label" for="form3Example1cg"
+                    >Your Name</label
+                  >
+                  <p id="usercheck" style="color: red">**Username is missing</p>
+                </div>
+
+                <div class="form-outline mb-4">
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    class="form-control form-control-lg"
+                  />
+                  <label class="form-label" for="form3Example3cg"
+                    >Your Email</label
+                  >
+                  <small
+                    id="emailvalid"
+                    class="form-text text-muted invalid-feedback"
+                  >
+                    Your email must be a valid email
+                  </small>
+                </div>
+
+                <div class="form-outline mb-4">
+                  <input
+                    type="password"
+                    name="nPassword"
+                    id="password"
+                    class="form-control form-control-lg"
+                  />
+                  <label class="form-label" for="form3Example4cg"
+                    >Password</label
+                  >
+                  <p id="passcheck" style="color: red">
+                    **Please Fill the password
+                  </p>
+                </div>
+
+                <div class="form-outline mb-4">
+                  <input
+                    type="password"
+                    name="cPassword"
+                    id="confirmPassword"
+                    class="form-control form-control-lg"
+                  />
+                  <label class="form-label" for="form3Example4cdg"
+                    >Repeat your password</label
+                  >
+                  <p id="conpasscheck" style="color: red">
+                    **Password didn't match
+                  </p>
+                </div>
+
+                <div class="form-outline mb-4">
+                  <input
+                    type="text"
+                    name="mobileNo"
+                    id="phone"
+                    class="form-control form-control-lg"
+                  />
+                  <label class="form-label" for="form3Example1cg"
+                    >Your Mobile No</label
+                  >
+                </div>
+
+                <div class="d-flex justify-content-center">
+                  <button
+                    type="submit"
+                    id="submitbtn"
+                    class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"
+                  >
+                    Register
+                  </button>
+                </div>
+
+                <p class="text-center text-muted mt-5 mb-0">
+                  Have already an account?
+                  <a href="/signin" class="fw-bold text-body"
+                    ><u>Login here</u></a
+                  >
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  let container = document.getElementById("container");
+
+  toggle = () => {
+    container.classList.toggle("sign-in");
+    container.classList.toggle("sign-up");
+  };
+
+  setTimeout(() => {
+    container.classList.add("sign-in");
+  }, 200);
+</script>
+<script>
+  $(document).ready(function () {
+    // Validate Username
+    $("#usercheck").hide();
+    let usernameError = true;
+    $("#name").keyup(function () {
+      validateUsername();
+    });
+
+    function validateUsername() {
+      let usernameValue = $("#name").val();
+      if (usernameValue.length == "") {
+        $("#usercheck").show();
+        usernameError = false;
+        return false;
+      } else if (usernameValue.length < 3 || usernameValue.length > 10) {
+        $("#usercheck").show();
+        $("#usercheck").html("**length of username must be between 3 and 10");
+        usernameError = false;
+        return false;
+      } else {
+        $("#usercheck").hide();
+      }
+    }
+
+    //   Validate Email
+    const email = document.getElementById("email");
+    email.addEventListener("blur", () => {
+      let regex = /^([_\-\.0-9a-zA-Z]+)@([_\-\.0-9a-zA-Z]+)\.([a-zA-Z]){2,7}$/;
+      let s = email.value;
+      if (regex.test(s)) {
+        email.classList.remove("is-invalid");
+        emailError = true;
+      } else {
+        email.classList.add("is-invalid");
+        emailError = false;
+      }
+    });
+
+    // Validate Password
+    $("#passcheck").hide();
+    let passwordError = true;
+    $("#password").keyup(function () {
+      validatePassword();
+    });
+    async function validatePassword() {
+      let passwordValue = $("#password").val();
+      if (passwordValue.length == "") {
+        $("#passcheck").show();
+        passwordError = false;
+        return false;
+      }
+      if (passwordValue.length < 3 || passwordValue.length > 10) {
+        $("#passcheck").show();
+        $("#passcheck").html(
+          "**length of your password must be between 3 and 10"
+        );
+        $("#passcheck").css("color", "red");
+        passwordError = false;
+        return false;
+      }
+      let res = await containsSpecialChars(passwordValue);
+      console.log(res);
+      if (res === false) {
+        $("#passcheck").show();
+        $("#passcheck").html("Password must contain special characters");
+        $("#passcheck").css("color", "red");
+        passwordError = false;
+        return false;
+      } else {
+        $("#passcheck").hide();
+      }
+    }
+    function containsSpecialChars(str) {
+      console.log("ivde vannu");
+      const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+      return specialChars.test(str);
+    }
+    // Validate Confirm Password
+    $("#conpasscheck").hide();
+    let confirmPasswordError = true;
+    $("#confirmPassword").keyup(function () {
+      validateConfirmPassword();
+    });
+    function validateConfirmPassword() {
+      let confirmPasswordValue = $("#confirmPassword").val();
+      let passwordValue = $("#password").val();
+      if (passwordValue != confirmPasswordValue) {
+        $("#conpasscheck").show();
+        $("#conpasscheck").html("**Password didn't Match");
+        $("#conpasscheck").css("color", "red");
+        confirmPasswordError = false;
+        return false;
+      } else {
+        $("#conpasscheck").hide();
+      }
+    }
+
+    // Submit button
+    $("#submitbtn").click(function () {
+      validateUsername();
+      validatePassword();
+      validateConfirmPassword();
+      validateEmail();
+      if (
+        usernameError == true &&
+        passwordError == true &&
+        confirmPasswordError == true &&
+        emailError == true
+      ) {
+        $("#signupForm").submit(function (evt) {
+          evt.preventDefault();
+          window.history.back();
+        });
+        return true;
+      } else {
+        return false;
+      }
+    });
+  });
+</script>

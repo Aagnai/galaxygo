@@ -1,0 +1,126 @@
+<%- include('../user/partials/userheader.ejs') %>
+<div class="h-100 d-flex align-items-center justify-content-center">
+  <div class="col-lg-8">
+    <form action="/addaddress" method="post" class="colorlib-form">
+      <h2>Address Details</h2>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <% if(addressErr.length>0){ %>
+            <div class="alert alert-danger col-md-12 text-center" role="alert">
+              <p class="text-danger"><%=addressErr %></p>
+            </div>
+            <% } %>
+            <label>Name</label>
+            <input
+              type="text"
+              name="fName"
+              id="fname"
+              class="form-control"
+              placeholder="Your Full Name"
+            />
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="form-group">
+            <label>Select Country</label>
+            <input
+              type="text"
+              name="country"
+              id="country"
+              class="form-control"
+              placeholder="Your country"
+            />
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="form-group">
+            <label>Address</label>
+            <input
+              type="text"
+              name="addressLine"
+              id="addressLine"
+              class="form-control"
+              placeholder="Enter Your Address"
+            />
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="form-group">
+            <label>City</label>
+            <input
+              type="text"
+              name="city"
+              id="towncity"
+              class="form-control"
+              placeholder="Town or City"
+            />
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>State</label>
+            <input
+              type="text"
+              name="state"
+              id="state"
+              class="form-control"
+              placeholder="State Province"
+            />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Pin Code</label>
+            <input
+              type="number"
+              name="pincode"
+              id="zippostalcode"
+              class="form-control"
+              placeholder="Zip / Postal"
+            />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Landmark</label>
+            <input
+              type="text"
+              name="landmark"
+              id="landmark"
+              class="form-control"
+              placeholder="Landmark"
+            />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Additional Number</label>
+            <input
+              type="text"
+              name="phone"
+              id="phone"
+              class="form-control"
+              placeholder="Mob Number"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="h-100 d-flex align-items-center justify-content-center">
+        <br /><br /><br /><br /><br /><br />
+        <button
+          class="addtocart btn btn-outline-success btn-addtocart"
+          type="submit"
+        >
+          Add Address
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('../user/partials/userfooter.ejs') %>
