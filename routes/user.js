@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const usercontroller = require("../controller/userController");
-const { userVerifyLogin } = require("../middleware/userVerifyLogin");
+const { userVerifyLogin } = require("../middleware/userVerifylogin");
 const { axiossession } = require("../middleware/axiossession");
 
 // get routes
