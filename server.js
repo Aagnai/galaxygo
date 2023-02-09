@@ -87,20 +87,29 @@ app.use(apphelper.userInViews);
 app.use("/", indexRouter);
 app.use("/admin", adminRouter);
 
-// app.use((req,res,next)=>{
-//   next(new Error('Error handling',404))
-// })
+app.use(function (req, res, next) {
+  const error = new Error(`Not found ${req.originalUrl}`);
+  error.status = 404;
+  next(error);
+});
 
-app.use((err, req, res, next) => {
-  console.log("error is showing :", err);
-  const error = err.message;
-
-  if (err.status) {
-    err.status.startsWith("4")
-      ? res.render("admin/404", { error })
-      : res.render("admin/500");
+// error handler
+app.use(function (err, req, res, next) {
+  console.log(err);
+  // render the error page
+  res.status(err.status || 500);
+  if (err.status == 404) {
+    if (err.admin) {
+      res.render("admin/404", { error: err.message });
+    } else {
+      res.render("user/404", { error: err.message });
+    }
   } else {
-    res.render("admin/500", { error: "Server 500 Error" });
+    if (err.admin) {
+      res.render("admin/404", { error: "server down" });
+    } else {
+      res.render("user/404", { error: "server down" });
+    }
   }
 });
 app.listen(process.env.PORT || 3000);

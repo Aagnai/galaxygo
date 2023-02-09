@@ -758,7 +758,7 @@ module.exports = {
 
   // post checkout
 
-  postCheckout: async (req, res) => {
+  postCheckout: async (req, res,next) => {
     try {
       if (req.body.address) {
         const user = req.session.log;
@@ -883,6 +883,7 @@ module.exports = {
       }
     } catch (e) {
       console.log("Error Message :", e);
+      next(e)
     }
   },
 

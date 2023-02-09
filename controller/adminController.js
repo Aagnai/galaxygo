@@ -33,7 +33,7 @@ module.exports = {
 
   getAdminHome: (req, res) => {
     try {
-      res.render("admin/index", { layout: "layouts/adminLayout.ejs" });
+      res.render("admin/dashboard", { layout: "layouts/adminLayout.ejs" });
     } catch (error) {
       console.log("Error Message :", error);
     }
@@ -557,7 +557,7 @@ module.exports = {
   },
 
   // bar chart details
-  GetChartDetails: async (req, res) => {
+  GetChartDetails: async (req, res,next) => {
     try {
       const value = req.query.value;
       var date = new Date();
@@ -699,7 +699,8 @@ module.exports = {
         res.json({ status: true, sales: salesData });
       }
     } catch (error) {
-      res.render("admin/error", { layout: "layouts/adminLayout.ejs" });
+      error.admin=true
+      next(error)
     }
   },
 
