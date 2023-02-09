@@ -11,7 +11,7 @@ router.get('/500',admincontroller.show500)
 // get routes
 
 
-router.get('/home',adminVerifyLogin, admincontroller.getAdminHome)
+
 router.get('/users',adminVerifyLogin, admincontroller.userManagement)
 router.get('/viewCategory',adminVerifyLogin, admincontroller.categoryManagement)
 router.get('/addCategory',adminVerifyLogin, admincontroller.viewCategory)

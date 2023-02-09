@@ -13,7 +13,7 @@ const adminPassword = process.env.AdminPassword;
 module.exports = {
   getAdminlogin: (req, res) => {
     if (req.session.adminLog) {
-      res.redirect("/admin/home", { layout: "layouts/adminLayout.ejs" });
+      res.redirect("/admin/dashboard", { layout: "layouts/adminLayout.ejs" });
     } else {
       res.render("admin/login");
     }
@@ -24,20 +24,14 @@ module.exports = {
 
     if (admin === adminEmail && password === adminPassword) {
       req.session.adminLog = true;
-      res.redirect("/admin/home");
+      res.redirect("/admin/dashboard");
     } else {
       req.session.adminLogErr = true;
       res.redirect("/admin");
     }
   },
 
-  getAdminHome: (req, res) => {
-    try {
-      res.render("admin/dashboard", { layout: "layouts/adminLayout.ejs" });
-    } catch (error) {
-      console.log("Error Message :", error);
-    }
-  },
+  
 
   userManagement: async (req, res, next) => {
     try {
