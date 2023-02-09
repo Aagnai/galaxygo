@@ -387,7 +387,7 @@
           userOrderData = response.userOrderData;
           walletBalance = response.walletBalance;
           var options = {
-            key: "rzp_test_VZx01l8lO0abIf", // Enter the Key ID generated from the Dashboard
+            key: response.raz_key, // Enter the Key ID generated from the Dashboard
             amount: response.razorpayOrderData.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
             currency: "INR",
             name: "Toft",
@@ -427,17 +427,15 @@
     let Couponcode = document.getElementById("couponInput").value;
 
   console.log(CouponCode, "veryfy payment");
-  function verifyPayment(payment, razorpayOrderData) {
-    console.log(razorpayOrderData, "orderrrrrrrrrrrrrrrrrrr dataaaaaaaaa");
+  function verifyPayment(response) {
+    console.log(response);
 
     $.ajax({
       url: "/verifyPayment",
       data: {
-        payment,
-        razorpayOrderData,
+        response,
         userOrderData,
-        CouponCode,
-        walletBalance,
+        CouponCode
       },
       method: "post",
 

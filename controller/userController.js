@@ -17,8 +17,8 @@ var {
 } = require("../node_modules/razorpay/dist/utils/razorpay-utils");
 
 var instance = new Razorpay({
-  key_secret: "DvG40o8cF8F6bHGUkMHyeMPE",
-  key_id: "rzp_test_VZx01l8lO0abIf",
+  key_secret: process.env.RAZ_SECRET_KEY,
+  key_id: process.env.RAZ_KEY_ID,
 });
 
 module.exports = {
@@ -385,11 +385,12 @@ module.exports = {
 
   addcart: async (req, res, next) => {
     try {
+      console.log("keri jose 1");
       let ownerId = req.session.log._id;
       if (!ownerId) {
         res.redirect("/log");
       }
-
+     console.log("keri jose");
       const productId = req.params.id;
       const user = await Cart.findOne({ owner: req.session.log._id });
       const product = await Product.findOne({ _id: productId });
@@ -818,7 +819,7 @@ module.exports = {
           });
         } else if (req.body.paymentMethod === "Razorpay") {
           const paymentMethod = req.body.paymentMethod;
-
+//
           const newOrder = new Order({
             date: new Date().toLocaleDateString(),
             time: new Date().toLocaleTimeString(),
@@ -832,6 +833,7 @@ module.exports = {
             orderStatus: "orderconfirmed",
             track: "orderconfirmed",
           });
+          let id;
           newOrder.save().then((result) => {
             let userOrderData = result;
             req.session.orderId = result._id;
@@ -850,6 +852,8 @@ module.exports = {
                   razorpayOrderData: order,
                   userOrderData: userOrderData,
                 };
+                response.raz_key = process.env.RAZ_KEY_ID
+                console.log(response);
 
                 res.json(response);
               }
@@ -858,7 +862,7 @@ module.exports = {
         }
 
         // quantity check
-        let order = await Order.findOne({ _id: result._id });
+        let order = await Order.findOne({ _id: id });
         const findProductId = order.products;
         findProductId.forEach(async (el) => {
           let removeQuantity = await Product.findOneAndUpdate(
@@ -885,21 +889,23 @@ module.exports = {
   // verify payment
   verifyPayment: async (req, res) => {
     try {
-      let razorpayOrderDataId = req.body["payment[razorpay_order_id]"];
+      console.log("verify payment");
+      console.log(req.body);
+      let razorpayOrderDataId = req.body.response.razorpay_order_id;
+     console.log(razorpayOrderDataId,"id ivde");
+      let paymentId = req.body.response.razorpay_payment_id;
 
-      let paymentId = req.body["payment[razorpay_payment_id]"];
+      let paymentSignature = req.body.response.razorpay_signature;
 
-      let paymentSignature = req.body["payment[razorpay_signature]"];
-
-      let userOrderDataId = req.body["userOrderData[_id]"];
+      let userOrderDataId = req.body.userOrderData._id;
 
       validate = validatePaymentVerification(
         { order_id: razorpayOrderDataId, payment_id: paymentId },
         paymentSignature,
-        "DvG40o8cF8F6bHGUkMHyeMPE"
+        process.env.RAZ_SECRET_KEY 
       );
-
       if (validate) {
+        console.log("validate : ",validate)
         await Order.findByIdAndUpdate(userOrderDataId, {
           orderStatus: "Order Placed",
           paymentStatus: "Payment Completed",
@@ -923,15 +929,15 @@ module.exports = {
             );
           }
           // cart remove
-          await Cart.findOneAndRemove({ userId: req.session.user._id }).then(
+          await Cart.findOneAndRemove({ userId: req.session.log._id }).then(
             () => {
               res.json({ status: true });
             }
           );
         });
       }
-    } catch (error) {
-      res.render("user/error");
+    }  catch (e) {
+      console.log("Error Message :", e);
     }
   },
 
@@ -939,8 +945,8 @@ module.exports = {
   paymentFailed: (req, res) => {
     try {
       res.json({ status: true });
-    } catch (error) {
-      res.render("user/error");
+    } catch (e) {
+      console.log("Error Message :", e);
     }
   },
 

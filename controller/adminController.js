@@ -583,6 +583,7 @@ module.exports = {
           },
           { $sort: { _id: 1 } },
         ]);
+        console.log("ethiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii 1")
         for (let i = 1; i <= 12; i++) {
           let result = true;
           for (let k = 0; k < salesByYear.length; k++) {
@@ -694,7 +695,7 @@ module.exports = {
         for (let i = 0; i < sales.length; i++) {
           salesData.push(sales[i].totalPrice);
         }
-
+        console.log("ethiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
         res.json({ status: true, sales: salesData });
       }
     } catch (error) {
