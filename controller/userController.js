@@ -390,7 +390,7 @@ module.exports = {
       if (!ownerId) {
         res.redirect("/log");
       }
-     console.log("keri jose");
+
       const productId = req.params.id;
       const user = await Cart.findOne({ owner: req.session.log._id });
       const product = await Product.findOne({ _id: productId });

@@ -1,5 +1,7 @@
 <%- include('../user/partials/userheader.ejs') %>
 
+
+
 <!-- Breadcrumb Section Begin -->
 <section class="breadcrumb-option">
   <div class="container">
@@ -146,24 +148,33 @@
 
 <script>
   async function addToCart(id) {
-    console.log("id check : ", id);
+  
     await axios.post(`/addcart/${id}`).then((data) => {
-      console.log(data);
-      Swal.fire({
+      if (data.data == "LOGIN") {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong!",
+          footer: '<a href="/log">login first</a>',
+        });
+       } else{
+        Swal.fire({
         icon: "success",
         position: "top-end",
         title: "added to cart",
         showConfirmButton: false,
         timer: 1500,
       });
+       }
+     
     });
   }
 </script>
 <script>
   async function addToWishlist(id) {
-    console.log("id wish check : ", id);
+
     await axios.post(`/addWishlist/${id}`).then((data) => {
-      console.log(data);
+   
       if (data.data == "LOGIN") {
         console.log("if");
         Swal.fire({
@@ -172,12 +183,16 @@
           text: "Something went wrong!",
           footer: '<a href="/log">login first</a>',
         });
-      }
-      if (data.data.remove) {
+        document.getElementById(id).style.color = "grey";
+      }else{
+        if (data.data.remove) {
         document.getElementById(id).style.color = "grey";
       } else {
         document.getElementById(id).style.color = "red";
       }
+
+      }
+     
     });
   }
 </script>

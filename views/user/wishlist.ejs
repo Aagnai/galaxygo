@@ -34,7 +34,7 @@
                 <td class="cart__price">₹ <%= element.product.price%></td>
                 <td class="cart__price">
                   <a
-                    class="add-btn"
+                    class="btn btn-outline-success mt-3 mt-sm-0"
                     onclick="addToCart('<%= element.product._id %>')"
                     >Add to cart</a
                   >
@@ -170,7 +170,7 @@
             toast: true,
             position: "top-end",
             showConfirmButton: false,
-            timer: 3000,
+            timer: 1000,
             timerProgressBar: true,
             didOpen: (toast) => {
               toast.addEventListener("mouseenter", Swal.stopTimer);

@@ -28,7 +28,7 @@ router.get("/cancelOrder", userVerifyLogin, usercontroller.cancelOrder);
 router.post("/register", usercontroller.register);
 router.post("/otp", usercontroller.otp);
 router.post("/log", usercontroller.logIn);
-router.post("/addcart/:id", userVerifyLogin, usercontroller.addcart);
+router.post("/addcart/:id",axiossession , usercontroller.addcart);
 router.post("/addaddress", userVerifyLogin, usercontroller.postAddAddress);
 router.post("/checkout/:CartId", userVerifyLogin, usercontroller.postCheckout);
 router.post("/updateProfile", userVerifyLogin, usercontroller.updateProfile);

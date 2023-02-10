@@ -1,12 +1,9 @@
-const axiossession=(req,res,next)=>{
+const axiossession = (req, res, next) => {
+  if (req.session.log) {
+    next();
+  } else {
+    res.json("LOGIN");
+  }
+};
 
-    if(req.session.log){
-        next()
-    }else{
-        console.log("HHHHH");
-        res.json("LOGIN")
-    }
-}
-
-
-module.exports={axiossession}
+module.exports = { axiossession };
