@@ -1,48 +1,53 @@
 <%- include('../admin/partials/adminheader.ejs') %>
-<div class="col-sm-12 col-xl-6">
-  <div class="bg-secondary rounded h-100 p-4">
-    <h6 class="mb-4">Category</h6>
-    <% if(err) { %>
+<div class="container-fluid pt-4 px-4">
+  <div class="row g-4">
+    <div class="col-2"></div>
+    <div class="col-sm-12 col-xl-6">
+      <div class="bg-secondary rounded h-100 p-4">
+        <h6 class="mb-4">Category</h6>
+        <% if(err) { %>
 
-    <p class="h1 text-danger"><%= err %></p>
-    <% } %>
-    <form
-      action="/admin/addCategory"
-      method="post"
-      enctype="multipart/form-data"
-    >
-      <label class="form-label">Size</label>
-      <div class="form-floating mb-3">
-        <select
-          class="form-select"
-          name="title"
-          id="floatingSelect"
-          aria-label="Floating label select example"
+        <p class="h1 text-danger"><%= err %></p>
+        <% } %>
+        <form
+          action="/admin/addCategory"
+          method="post"
+          enctype="multipart/form-data"
         >
-          <option selected>select</option>
-          <option value="Shirt">Shirt</option>
-          <option value="T-shirt">T-shirt</option>
-          <option value="Jeans">Jeans</option>
-          <option value="Trousers">Trousers</option>
-          <option value="Jackets">Jackets</option>
-          <option value="Blazers & coats">Blazers & coats</option>
-          <option value="Briefs & Trunks">Briefs & Trunks</option>
-          <option value="Boxers">Boxers</option>
-        </select>
-      </div>
+          <label class="form-label">Size</label>
+          <div class="form-floating mb-3">
+            <select
+              class="form-select"
+              name="title"
+              id="floatingSelect"
+              aria-label="Floating label select example"
+            >
+              <option selected>select</option>
+              <option value="Shirt">Shirt</option>
+              <option value="T-shirt">T-shirt</option>
+              <option value="Jeans">Jeans</option>
+              <option value="Trousers">Trousers</option>
+              <option value="Jackets">Jackets</option>
+              <option value="Blazers & coats">Blazers & coats</option>
+              <option value="Briefs & Trunks">Briefs & Trunks</option>
+              <option value="Boxers">Boxers</option>
+            </select>
+          </div>
 
-      <div class="mb-3">
-        <label for="formFileMultiple" class="form-label">Image</label>
-        <input
-          name="categoryImage"
-          class="form-control bg-dark"
-          type="file"
-          id="formFileMultiple"
-          multiple
-        />
-      </div>
+          <div class="mb-3">
+            <label for="formFileMultiple" class="form-label">Image</label>
+            <input
+              name="categoryImage"
+              class="form-control bg-dark"
+              type="file"
+              id="formFileMultiple"
+              multiple
+            />
+          </div>
 
-      <button type="submit" class="btn btn-primary">ADD</button>
-    </form>
+          <button type="submit" class="btn btn-primary">ADD</button>
+        </form>
+      </div>
+    </div>
   </div>
 </div>

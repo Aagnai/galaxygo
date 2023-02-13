@@ -31,8 +31,6 @@ module.exports = {
     }
   },
 
-  
-
   userManagement: async (req, res, next) => {
     try {
       let users = await userModel.find({ delete: { $ne: true } });
@@ -143,8 +141,9 @@ module.exports = {
 
   getEditCategory: async (req, res, next) => {
     try {
-      const iid = req.query.id;
+      let iid = req.query.id;
 
+      const err = req.flash("err");
       const oneUser = await category.findOne({ _id: iid });
       if (!oneUser) {
         next(new Error("Error", 404));
@@ -153,6 +152,7 @@ module.exports = {
       res.render("admin/editCategory", {
         layout: "layouts/adminLayout.ejs",
         oneUser,
+        err,
       });
     } catch (error) {
       console.log("Error Message :", error);
@@ -168,19 +168,26 @@ module.exports = {
       const imageUrl = image[0].path.substring(6);
       cat.categoryImage = imageUrl;
     }
-    const c = await category.findOneAndUpdate(
-      { _id: id },
-      {
-        $set: {
-          title: req.body.title,
+    category
+      .findOneAndUpdate(
+        { _id: id },
+        {
+          $set: {
+            title: req.body.title,
 
-          categoryImage: cat.categoryImage,
-        },
-      },
-      { new: true }
-    );
-
-    res.redirect("/admin/viewCategory");
+            categoryImage: cat.categoryImage,
+          },
+        }
+      )
+      .then((newOne) => {
+        res.redirect("/admin/viewCategory");
+      })
+      .catch((err) => {
+        if (err.code === 11000) {
+          req.flash("err", "! Duplicate value !");
+          res.redirect("/admin/editCategory?id=" + id);
+        }
+      });
   },
 
   deleteCategory: async (req, res) => {
@@ -327,10 +334,12 @@ module.exports = {
 
   getAddBanner: (req, res) => {
     try {
+      const err = req.flash("err");
       res.render("admin/add_banner", {
         layout: "layouts/adminLayout.ejs",
         bannerAddErr: req.flash("bannerAddErr"),
         bannerView: true,
+        err,
       });
     } catch (error) {}
   },
@@ -346,19 +355,27 @@ module.exports = {
         Object.assign(req.body, obj);
 
         const newBanner = new Banner(req.body);
-        await newBanner.save().then(async (result) => {
-          res.redirect("/admin/banner");
-        });
-      } else {
-        req.flash("bannerAddErr", "Fill full coloms");
-        res.redirect("/admin/addBanner");
+        newBanner
+          .save()
+          .then((result) => {
+            res.redirect("/admin/banner");
+          })
+          .catch((err) => {
+            if (err.code === 11000) {
+              req.flash("err", "! Duplicate value !");
+              res.redirect("/admin/addBanner");
+            } else {
+              req.flash("bannerAddErr", "Add Data");
+              res.redirect("/admin/addBanner");
+            }
+          });
       }
     } catch (error) {}
   },
-
   deleteBanner: async (req, res) => {
     try {
-      const id = req.query.id;
+      const id = req.params.id;
+      console.log("id : ", req.query);
       const deleteBanner = await Banner.findOneAndUpdate(
         { _id: id },
         { $set: { delete: true } }
@@ -551,7 +568,7 @@ module.exports = {
   },
 
   // bar chart details
-  GetChartDetails: async (req, res,next) => {
+  GetChartDetails: async (req, res, next) => {
     try {
       const value = req.query.value;
       var date = new Date();
@@ -577,7 +594,7 @@ module.exports = {
           },
           { $sort: { _id: 1 } },
         ]);
-        console.log("ethiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii 1")
+        console.log("ethiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii 1");
         for (let i = 1; i <= 12; i++) {
           let result = true;
           for (let k = 0; k < salesByYear.length; k++) {
@@ -689,12 +706,12 @@ module.exports = {
         for (let i = 0; i < sales.length; i++) {
           salesData.push(sales[i].totalPrice);
         }
-        console.log("ethiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
+        console.log("ethiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
         res.json({ status: true, sales: salesData });
       }
     } catch (error) {
-      error.admin=true
-      next(error)
+      error.admin = true;
+      next(error);
     }
   },
 

@@ -124,7 +124,13 @@ module.exports = {
   shop: async (req, res, next) => {
     try {
       const newCategories = await category.find();
-      const newproducts = await Product.find();
+   let newproducts;
+   if(req.query.q){
+    newproducts = await Product.find({_id:req.query.q})
+   }else{
+    newproducts = await Product.find();
+   }
+   
       let wish = null;
       if (req.session.log) {
         const id = req.session.log._id;
@@ -758,7 +764,7 @@ module.exports = {
 
   // post checkout
 
-  postCheckout: async (req, res,next) => {
+  postCheckout: async (req, res, next) => {
     try {
       if (req.body.address) {
         const user = req.session.log;
@@ -819,7 +825,7 @@ module.exports = {
           });
         } else if (req.body.paymentMethod === "Razorpay") {
           const paymentMethod = req.body.paymentMethod;
-//
+          //
           const newOrder = new Order({
             date: new Date().toLocaleDateString(),
             time: new Date().toLocaleTimeString(),
@@ -852,7 +858,7 @@ module.exports = {
                   razorpayOrderData: order,
                   userOrderData: userOrderData,
                 };
-                response.raz_key = process.env.RAZ_KEY_ID
+                response.raz_key = process.env.RAZ_KEY_ID;
                 console.log(response);
 
                 res.json(response);
@@ -883,7 +889,7 @@ module.exports = {
       }
     } catch (e) {
       console.log("Error Message :", e);
-      next(e)
+      next(e);
     }
   },
 
@@ -893,7 +899,7 @@ module.exports = {
       console.log("verify payment");
       console.log(req.body);
       let razorpayOrderDataId = req.body.response.razorpay_order_id;
-     console.log(razorpayOrderDataId,"id ivde");
+      console.log(razorpayOrderDataId, "id ivde");
       let paymentId = req.body.response.razorpay_payment_id;
 
       let paymentSignature = req.body.response.razorpay_signature;
@@ -903,10 +909,10 @@ module.exports = {
       validate = validatePaymentVerification(
         { order_id: razorpayOrderDataId, payment_id: paymentId },
         paymentSignature,
-        process.env.RAZ_SECRET_KEY 
+        process.env.RAZ_SECRET_KEY
       );
       if (validate) {
-        console.log("validate : ",validate)
+        console.log("validate : ", validate);
         await Order.findByIdAndUpdate(userOrderDataId, {
           orderStatus: "Order Placed",
           paymentStatus: "Payment Completed",
@@ -937,7 +943,7 @@ module.exports = {
           );
         });
       }
-    }  catch (e) {
+    } catch (e) {
       console.log("Error Message :", e);
     }
   },
@@ -1105,43 +1111,62 @@ module.exports = {
       console.log("Error Message :", e);
     }
   },
-  checkPassword:async(req,res)=>{
-    console.log(req.body,'hehehheheheheheheheheheheheehe')
-    const pass = req.body.nPassword
-    const userId = req.session.log._id
-    
-    const user = await User.findOne({_id: userId })
+  checkPassword: async (req, res) => {
+    console.log(req.body, "hehehheheheheheheheheheheheehe");
+    const pass = req.body.nPassword;
+    const userId = req.session.log._id;
+
+    const user = await User.findOne({ _id: userId });
     if (user && user.access) {
       bcrypt.compare(pass, user.nPassword).then((status) => {
         if (status) {
-           res.json({stat:true})
+          res.json({ stat: true });
+        } else {
+          res.json({ stat: false });
         }
-        else {
-         res.json({stat:false})
-        }
-      })
-    }
-    else {
-
-      res.json({stat:false})
-
+      });
+    } else {
+      res.json({ stat: false });
     }
   },
-  updatePass:async(req,res)=>{
-    console.log(req.body,"ekanayiiiiiiii");
-    let pass = req.body.nPassword
-   pass = await bcrypt.hash(pass,10)
-   const userId = req.session.log._id
-    
-    await User.findOneAndUpdate({_id: userId },{$set:{nPassword:pass}})
-    res.json({status:true})
-  }
+  updatePass: async (req, res) => {
+    console.log(req.body, "ekanayiiiiiiii");
+    let pass = req.body.nPassword;
+    pass = await bcrypt.hash(pass, 10);
+    const userId = req.session.log._id;
 
-  //
+    await User.findOneAndUpdate({ _id: userId }, { $set: { nPassword: pass } });
+    res.json({ status: true });
+  },
 
-  // consoled error handling
+  // search
 
-  // catch(e){
-  //   next(new Error(e))
-  // }
+  search: async (req, res, next) => {
+    try {
+      const sResult = [];
+      const skey = req.params.id;
+      const regex = new RegExp("^" + skey + ".*", "i");
+      const pros = await Product.aggregate([
+        {
+          $match: {
+            $or: [{ name: regex }, { description: regex }, { brand: regex }],
+          },
+        },
+      ]);
+
+      pros.forEach((val, i) => {
+        sResult.push({ name: val.name, type: "Product", id: val._id });
+      });
+      const catlist = await category.aggregate([
+        { $match: { $or: [{ title: regex }] } },
+      ]);
+      catlist.forEach((val, i) => {
+        sResult.push({ title: val.name, type: "Category", id: val._id });
+      });
+      console.log("sResult : ", sResult);
+      res.send({ id: sResult });
+    } catch (e) {
+      console.log("Error Message :", e);
+    }
+  },
 };

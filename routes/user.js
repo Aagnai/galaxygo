@@ -37,18 +37,22 @@ router.post("/addCartHome", userVerifyLogin, usercontroller.addCartHome);
 router.post("/verifyCoupon", userVerifyLogin, usercontroller.verifyCoupon);
 router.post("/verifyPayment", userVerifyLogin, usercontroller.verifyPayment);
 router.post("/paymentFailed", userVerifyLogin, usercontroller.paymentFailed);
+router.post('/search/:id', usercontroller.search)
+router.post('/updatePassword',usercontroller.updatePass)
+router.post('/checking',usercontroller.checkPassword)
 
 // extra routes
 
 router.patch("/cart", userVerifyLogin, usercontroller.cartChangeQuantity);
 router.delete("/cart/", userVerifyLogin, usercontroller.deleteCartProduct);
 router.delete("/address/", userVerifyLogin, usercontroller.deleteAddress);
+
+
 router.delete(
   "/deleteWishlist/",
   userVerifyLogin,
   usercontroller.deleteWishlist
 );
-router.post('/updatePassword',usercontroller.updatePass)
-router.post('/checking',usercontroller.checkPassword)
+
 
 module.exports = router;

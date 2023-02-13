@@ -51,7 +51,7 @@ router.get('/orderDetails/:id',adminVerifyLogin,admincontroller.getOrderDetails)
 
 // extra routes
 
-router.delete('/bannerDelete',adminVerifyLogin,admincontroller.deleteBanner)
+router.delete('/bannerDelete/:id',adminVerifyLogin,admincontroller.deleteBanner)
 router.delete('/userDelete',adminVerifyLogin,admincontroller.deleteUser)
 
 // chain routes

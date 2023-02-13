@@ -36,7 +36,7 @@
                   />
                 </td>
                 <td>
-                  <a
+                  <a onclick="deleteBanner('<%= banner[i]._id %>')"
                     ><button type="button" class="btn btn-outline-warning m-2">
                       Delete
                     </button></a
@@ -65,7 +65,7 @@
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.delete(`/admin/bannerDelete?id=${id}`).then((result) => {
+        axios.delete(`/admin/bannerDelete/${id}`).then((result) => {
           if (result.data) {
             Swal.fire(
               "Deleted!",

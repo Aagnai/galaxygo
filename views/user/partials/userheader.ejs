@@ -42,8 +42,14 @@
       </div>
       <div class="col-lg-3 col-md-3">
         <div class="header__nav__option">
-          <a href="#"><img src="/img/icon/search.png" alt="" /></a>
-          <a href="/wishlist"><img src="/img/icon/heart.png" alt="" /></a>
+          <a
+          role="button"
+            data-toggle="modal"
+            data-target="#exampleModalCenter"
+            onclick="searchs()"
+            ><img src="/img/icon/search.png"
+          /></a>
+          <a href="/wishlist"><img src="/img/icon/heart.png" /></a>
           <a href="/cart"
             ><img src="/img/icon/cart.png" alt="" /> <span>0</span></a
           >
@@ -57,3 +63,68 @@
     <div class="canvas__open"><i class="fa fa-bars"></i></div>
   </div>
 </header>
+
+<script>
+  function searchs() {
+    console.log("searching...........");
+    const myDiv = document.createElement("div");
+    myDiv.id = "div_id";
+    myDiv.innerHTML =
+      '<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">' +
+      ' <div class="modal-dialog modal-dialog-centered" role="document">' +
+      '<div class="modal-content">' +
+      '<div class="modal-header"> ' +
+      ' <h5 class="modal-title" id="exampleModalLongTitle">Searching...</h5>' +
+      ' <button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+      ' <span aria-hidden="true">&times;</span></button> </div>' +
+      '  <div  style="height: auto;" class="modal-body row height d-flex row flex-row justify-content-center align-items-start ">' +
+      '              <div class="col-md-12"><div class="form"><form action="/shop" id="searchForm"><input id="inp" name="p" type="text" onkeyup="sendData(this)" class="form-control form-input" placeholder="Search anything..."><div><input type="submit" class="btn btn-dark" value="Submit" hidden></div></form></div>' +
+      " </div>" +
+      '<section id="searching">' +
+      "</section>" +
+      "</div>" +
+      '<div class="modal-footer">' +
+      "</div></div></div></div>";
+
+    document.body.appendChild(myDiv);
+  }
+
+   function sendData(e) {
+    const searchResult = document.getElementById("searching");
+    console.log("searchResult : ",searchResult);
+    const exp = e.value.toString();
+    const match = exp.match(/^[a-zA-z ]*/);
+    const match2 = exp.match(/\s*/);
+    if (match2[0] === e.value) {
+      searchResult.innerHTML = "";
+    }
+    if (match[0] === e.value && e.value != "") {
+       axios.post(`/search/${exp}`).then((data) => {
+        const suggestion = data.data.id;
+        console.log(data.data);
+        searchResult.innerHTML = "";
+        if (suggestion.length < 1) {
+          searchResult.innerHTML = "<p>Sorry. Nothing Found.</p>";
+          return;
+        }
+        suggestion.forEach((element, i) => {
+          if (element.type == "Product") {
+            searchResult.innerHTML +=
+              `<a href='/shop?q=${element.id}'>${element.name}</a>` +
+              `<p class="text-muted m-0">  ${element.type}</p>`;
+          } else if (element.type == "Category") {
+            searchResult.innerHTML +=
+              `<a href='/shop?cate=${element.id}'>${element.title}</a>` +
+              `<p class="text-muted m-0">  ${element.type}</p>`;
+          }
+          if (suggestion[i + 1]) {
+            searchResult.innerHTML += '<hr class="p-0 m-0">';
+          }
+        });
+      });
+      return;
+    }
+    console.log("ending");
+    searchResult.innerHTML = "";
+  }
+</script>
