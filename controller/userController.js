@@ -11,6 +11,7 @@ const Coupon = require("../models/coupon");
 const Banner = require("../models/banner");
 const bcrypt = require("bcrypt");
 const moment = require("moment");
+const item_per_page = 6;
 const Razorpay = require("razorpay");
 var {
   validatePaymentVerification,
@@ -27,9 +28,9 @@ module.exports = {
   home: async (req, res, next) => {
     try {
       const cat = await category.find();
-      const product = await Product.find().limit(8)
+      const product = await Product.find().limit(8);
       const banner = await Banner.find({ delete: { $ne: true } });
-      const coup = await Coupon.find()
+      const coup = await Coupon.find();
       let wish = null;
       if (req.session.log) {
         const id = req.session.log._id;
@@ -46,6 +47,15 @@ module.exports = {
       });
     } catch (e) {
       console.log("Error Message :", e);
+    }
+  },
+  // defining about
+
+  about: (req, res, next) => {
+    try {
+      res.render("user/about",{layout: "layouts/layout.ejs"})
+    } catch (error) {
+      
     }
   },
 
@@ -123,18 +133,45 @@ module.exports = {
 
   shop: async (req, res, next) => {
     try {
+      const page = req.query.page;
+
       let newCategories;
-      if (req.query.cate) {
-        newCategories = await category.find({ _id: req.query.cate });
-      } else {
-        newCategories = await category.find();
-      }
+      newCategories = await category.find();
 
       let newproducts;
-      if (req.query.q) {
-        newproducts = await Product.find({ _id: req.query.q });
+
+      if (req.query.cate) {
+
+        newproducts = await Product.find({ category: req.query.cate })
+          .skip((page - 1) * item_per_page)
+          .limit(item_per_page);
+        console.log(newproducts);
+
+      } else if (req.query.q) {
+
+        newproducts = await Product.find({ _id: req.query.q })
+          .skip((page - 1) * item_per_page)
+          .limit(item_per_page);
+
+      } else if (req.query.sortHigh) {
+
+        newproducts = await Product.find()
+          .skip((page - 1) * item_per_page)
+          .limit(item_per_page)
+          .sort({ price: -1 });
+
+      } else if (req.query.sortlow) {
+
+        newproducts = await Product.find()
+          .skip((page - 1) * item_per_page)
+          .limit(item_per_page)
+          .sort({ price: 1 });
+
       } else {
-        newproducts = await Product.find();
+        
+        newproducts = await Product.find()
+          .skip((page - 1) * item_per_page)
+          .limit(item_per_page);
       }
 
       let wish = null;
@@ -142,6 +179,7 @@ module.exports = {
         const id = req.session.log._id;
         wish = await Wishlist.findOne({ user: id });
       }
+
       res.render("user/shop", {
         wish,
         newCategories,
@@ -376,14 +414,14 @@ module.exports = {
                 layout: "layouts/layout.ejs",
                 allCart,
                 user: req.session.log,
-                // cartView: true,
+                
                 notAvailable: req.flash("notAvailable"),
               });
             } else {
               res.render("user/cartEmpty", {
                 layout: "layouts/layout.ejs",
                 user: req.session.log,
-                // cartView: true,
+              
               });
             }
           }

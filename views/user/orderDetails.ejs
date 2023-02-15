@@ -224,7 +224,7 @@
                 console.log(orderId);
                 $.ajax({
                   url: "/cancelOrder/?id=" + orderId,
-                  method: "get",
+                  method: "post",
                 });
                 Swal.fire(
                   "Cancelled!",
