@@ -86,7 +86,7 @@ module.exports = {
 
   categoryManagement: async (req, res, next) => {
     try {
-      const showCategory = await category.find({});
+      const showCategory = await category.find({ access: { $ne: false } });
       res.render("admin/categoryManagement", {
         layout: "layouts/adminLayout.ejs",
         showCategory,
@@ -191,13 +191,18 @@ module.exports = {
   },
 
   deleteCategory: async (req, res) => {
-    const idcategory = req.query.id;
-    await category.deleteOne({ _id: idcategory });
-    res.redirect("/admin/viewCategory");
+    const id = req.query.id;
+    const deletecat = await category.findOneAndUpdate(
+      { _id: id },
+      { $set: { access: false } }
+    );
+    deletecat.save().then(() => {
+      res.json("success");
+    });
   },
 
   productManagement: async (req, res) => {
-    const showProducts = await Products.find().populate("category");
+    const showProducts = await Products.find({ access: { $ne: false } }).populate("category");
     res.render("admin/productManagement", {
       layout: "layouts/adminLayout.ejs",
       showProducts,
@@ -308,15 +313,19 @@ module.exports = {
     res.redirect("/admin/viewProducts");
   },
 
+  // product delete
+
   deleteProducts: async (req, res) => {
-    const id = req.query.id;
-
-    await Products.deleteOne({ _id: id });
-    res.redirect("/admin/viewProducts");
-  },
-
-  show500: (req, res) => {
-    res.render("admin/500", { layout: "layouts/adminLayout.ejs" });
+    try {
+      const id = req.query.id;
+      const deleteProduct = await Products.findOneAndUpdate(
+        { _id: id },
+        { $set: { access: false } }
+      );
+      deleteProduct.save().then(() => {
+        res.json("success");
+      });
+    } catch (error) {}
   },
 
   getBanner: async (req, res) => {
@@ -372,10 +381,11 @@ module.exports = {
       }
     } catch (error) {}
   },
+  // banner delete
+
   deleteBanner: async (req, res) => {
     try {
       const id = req.params.id;
-      console.log("id : ", req.query);
       const deleteBanner = await Banner.findOneAndUpdate(
         { _id: id },
         { $set: { delete: true } }
@@ -594,7 +604,7 @@ module.exports = {
           },
           { $sort: { _id: 1 } },
         ]);
-        console.log("ethiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii 1");
+
         for (let i = 1; i <= 12; i++) {
           let result = true;
           for (let k = 0; k < salesByYear.length; k++) {
@@ -706,7 +716,7 @@ module.exports = {
         for (let i = 0; i < sales.length; i++) {
           salesData.push(sales[i].totalPrice);
         }
-        console.log("ethiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+
         res.json({ status: true, sales: salesData });
       }
     } catch (error) {
@@ -899,5 +909,9 @@ module.exports = {
     } catch (error) {
       res.render("admin/error");
     }
+  },
+
+  show500: (req, res) => {
+    res.render("admin/500", { layout: "layouts/adminLayout.ejs" });
   },
 };

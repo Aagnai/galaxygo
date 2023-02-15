@@ -34,6 +34,10 @@ const productSchema = new mongoose.Schema({
         type: String,
         max: 1000
       },
+      access: {
+        type: Boolean,
+        default: true,
+    }
       
 }, { timestamps: true 
 })

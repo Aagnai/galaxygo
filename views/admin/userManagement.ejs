@@ -6,7 +6,7 @@
     <div class="col-2"></div>
     <div class="col-10">
       <div class="bg-secondary rounded h-100 p-4">
-        <h6 class="mb-4">Users Table</h6>
+        <h6 class="mb-4">Users</h6>
         <div class="table-responsive">
           <div class="table container p-5">
             <table
@@ -16,7 +16,6 @@
               <thead>
                 <tr>
                   <th scope="col">#</th>
-                  <!-- <th scope="col">Full Name</th> -->
                   <th scope="col">User Name</th>
                   <th scope="col">Email</th>
                   <th scope="col">Phone</th>
@@ -64,7 +63,8 @@
                         </button>
                       </form>
                       <% } %>
-                      <br />
+                    </div>
+                    <div class="d-flex flex-lg-row justify-content-center mt-3">
                       <a onclick="deleteUser('<%= user._id %>')"
                         ><button type="button" class="btn btn-outline-danger">
                           Delete

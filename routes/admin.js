@@ -16,11 +16,9 @@ router.get('/users',adminVerifyLogin, admincontroller.userManagement)
 router.get('/viewCategory',adminVerifyLogin, admincontroller.categoryManagement)
 router.get('/addCategory',adminVerifyLogin, admincontroller.viewCategory)
 router.get('/editCategory',adminVerifyLogin, admincontroller.getEditCategory)
-router.get('/deleteCategory',adminVerifyLogin, admincontroller.deleteCategory)
 router.get('/viewProducts',adminVerifyLogin, admincontroller.productManagement)
 router.get('/addProducts',adminVerifyLogin, admincontroller.getAddProducts)
 router.get('/editProduct',adminVerifyLogin, admincontroller.getEditProducts)
-router.get('/deleteProduct',adminVerifyLogin, admincontroller.deleteProducts)
 router.get('/addBanner',adminVerifyLogin,admincontroller.getAddBanner)
 router.get('/banner/',adminVerifyLogin,admincontroller.getBanner)
 router.get('/addCoupon',adminVerifyLogin,admincontroller.getAddCoupon)
@@ -53,6 +51,8 @@ router.get('/orderDetails/:id',adminVerifyLogin,admincontroller.getOrderDetails)
 
 router.delete('/bannerDelete/:id',adminVerifyLogin,admincontroller.deleteBanner)
 router.delete('/userDelete',adminVerifyLogin,admincontroller.deleteUser)
+router.delete('/deleteProduct',adminVerifyLogin, admincontroller.deleteProducts)
+router.delete('/deleteCategory',adminVerifyLogin, admincontroller.deleteCategory)
 
 // chain routes
 

@@ -22,15 +22,14 @@ var instance = new Razorpay({
 });
 
 module.exports = {
-  // session
-
   // defining home page
 
   home: async (req, res, next) => {
     try {
       const cat = await category.find();
-      const product = await Product.find();
+      const product = await Product.find().limit(8)
       const banner = await Banner.find({ delete: { $ne: true } });
+      const coup = await Coupon.find()
       let wish = null;
       if (req.session.log) {
         const id = req.session.log._id;
@@ -42,6 +41,7 @@ module.exports = {
         user: req.session.log,
         banner,
         cat,
+        coup,
         layout: "layouts/layout.ejs",
       });
     } catch (e) {
@@ -123,14 +123,20 @@ module.exports = {
 
   shop: async (req, res, next) => {
     try {
-      const newCategories = await category.find();
-   let newproducts;
-   if(req.query.q){
-    newproducts = await Product.find({_id:req.query.q})
-   }else{
-    newproducts = await Product.find();
-   }
-   
+      let newCategories;
+      if (req.query.cate) {
+        newCategories = await category.find({ _id: req.query.cate });
+      } else {
+        newCategories = await category.find();
+      }
+
+      let newproducts;
+      if (req.query.q) {
+        newproducts = await Product.find({ _id: req.query.q });
+      } else {
+        newproducts = await Product.find();
+      }
+
       let wish = null;
       if (req.session.log) {
         const id = req.session.log._id;
@@ -825,7 +831,6 @@ module.exports = {
           });
         } else if (req.body.paymentMethod === "Razorpay") {
           const paymentMethod = req.body.paymentMethod;
-          //
           const newOrder = new Order({
             date: new Date().toLocaleDateString(),
             time: new Date().toLocaleTimeString(),
@@ -866,16 +871,6 @@ module.exports = {
             );
           });
         }
-
-        // quantity check
-        let order = await Order.findOne({ _id: id });
-        const findProductId = order.products;
-        findProductId.forEach(async (el) => {
-          let removeQuantity = await Product.findOneAndUpdate(
-            { _id: el.product },
-            { $inc: { stock: -el.quantity } }
-          );
-        });
 
         // coupon check
         if (coupon) {
@@ -1112,7 +1107,6 @@ module.exports = {
     }
   },
   checkPassword: async (req, res) => {
-    console.log(req.body, "hehehheheheheheheheheheheheehe");
     const pass = req.body.nPassword;
     const userId = req.session.log._id;
 
@@ -1130,7 +1124,6 @@ module.exports = {
     }
   },
   updatePass: async (req, res) => {
-    console.log(req.body, "ekanayiiiiiiii");
     let pass = req.body.nPassword;
     pass = await bcrypt.hash(pass, 10);
     const userId = req.session.log._id;
@@ -1157,13 +1150,15 @@ module.exports = {
       pros.forEach((val, i) => {
         sResult.push({ name: val.name, type: "Product", id: val._id });
       });
+
       const catlist = await category.aggregate([
         { $match: { $or: [{ title: regex }] } },
       ]);
+
       catlist.forEach((val, i) => {
-        sResult.push({ title: val.name, type: "Category", id: val._id });
+        sResult.push({ title: val.title, type: "Category", id: val._id });
       });
-      console.log("sResult : ", sResult);
+
       res.send({ id: sResult });
     } catch (e) {
       console.log("Error Message :", e);

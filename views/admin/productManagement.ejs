@@ -10,11 +10,11 @@
           ><button type="button" class="btn btn-outline-danger m-2">
             Add Product
           </button></a
-        > 
+        >
       </div>
-      <br>
+      <br />
       <div class="bg-secondary rounded h-100 p-4">
-        <h6 class="mb-4">Category</h6>
+        <h6 class="mb-4">Products</h6>
         <div class="table-responsive">
           <div class="table container p-5">
             <table
@@ -55,10 +55,11 @@
                   <td>
                     <% for(let z=0;z<PS.productImage.length;z++){ %>
 
-                        <img width="80px" height="100px" src="<%= PS.productImage[z] %>" alt="">
-                        
-                        <% } %>
+                      <img width="80px" height="100px" src="<%= PS.productImage[z] %>">
+                      
+                      <% } %>
                   </td>
+
                   <td><%= PS.description %></td>
 
                   <td>
@@ -68,10 +69,7 @@
                       </button></a
                     >
 
-                    <a
-                      onclick="return confirm('are you sure?')"
-                      href="/admin/deleteProduct?id=<%= PS._id %>"
-                    >
+                    <a onclick="deletePro('<%= PS._id %>')">
                       <button type="button" class="btn btn-outline-danger m-2">
                         Delete
                       </button></a
@@ -88,3 +86,34 @@
   </div>
   <!-- Table End -->
 </div>
+
+<script>
+  function deletePro(id) {
+    console.log(id);
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.delete(`/admin/deleteProduct?id=${id}`).then((result) => {
+          if (result.data) {
+            Swal.fire(
+              "Deleted!",
+              "Your user has been deleted.",
+              "success"
+            ).then(() => {
+              location.reload();
+            });
+          } else {
+            alert("wrong!");
+          }
+        });
+      }
+    });
+  }
+</script>

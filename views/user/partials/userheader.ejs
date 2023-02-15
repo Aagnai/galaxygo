@@ -115,7 +115,7 @@
           } else if (element.type == "Category") {
             searchResult.innerHTML +=
               `<a href='/shop?cate=${element.id}'>${element.title}</a>` +
-              `<p class="text-muted m-0">  ${element.type}</p>`;
+              `<p class="text-muted m-0">  ${element.type}</p>`
           }
           if (suggestion[i + 1]) {
             searchResult.innerHTML += '<hr class="p-0 m-0">';

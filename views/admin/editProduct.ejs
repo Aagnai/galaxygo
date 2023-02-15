@@ -1,74 +1,120 @@
 <%- include('../admin/partials/adminheader.ejs') %>
-<div class="col-sm-12 col-xl-6">
-    <div class="bg-secondary rounded h-100 p-4">
+<div class="container-fluid pt-4 px-4">
+  <div class="row g-4">
+    <div class="col-2"></div>
+    <div class="col-sm-12 col-xl-6">
+      <div class="bg-secondary rounded h-100 p-4">
         <h6 class="mb-4">Product</h6>
-        <form action="/admin/editProduct/<%= productShow._id %>" method="post" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label  class="form-label">Name</label>
-                <input name="name" value="<%= productShow.name %>" type="text" class="form-control">     
-            </div>
-            <div class="mb-3">
-                <label  class="form-label">Brand</label>
-                <input name="brand" value="<%= productShow.brand %>" type="text" class="form-control">     
-            </div>
-            <div class="mb-3">
-                <label  class="form-label">Price</label>
-                <input name="price" value="<%= productShow.price %>" type="number" class="form-control">     
-            </div>
+        <form
+          action="/admin/editProduct/<%= productShow._id %>"
+          method="post"
+          enctype="multipart/form-data"
+        >
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input
+              name="name"
+              value="<%= productShow.name %>"
+              type="text"
+              class="form-control"
+            />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Brand</label>
+            <input
+              name="brand"
+              value="<%= productShow.brand %>"
+              type="text"
+              class="form-control"
+            />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Price</label>
+            <input
+              name="price"
+              value="<%= productShow.price %>"
+              type="number"
+              class="form-control"
+            />
+          </div>
 
-            <div class="mb-3">
-                <label  class="form-label">Stock</label>
-                <input name="stock" value="<%= productShow.stock %>" type="number" class="form-control">     
-            </div>
+          <div class="mb-3">
+            <label class="form-label">Stock</label>
+            <input
+              name="stock"
+              value="<%= productShow.stock %>"
+              type="number"
+              class="form-control"
+            />
+          </div>
 
-            <label  class="form-label">Category</label>
-            <div class="form-floating mb-3">
-                
-                <select class="form-select" name="category" id="floatingSelect"
-                    aria-label="Floating label select example">
-                    <option selected>select</option>
-                    <% newCategories.forEach(element => {%> 
-                        
-                        <option <% if(element.title==productShow.category.title){ %>
-                            value="<%= productShow.category._id %>" selected
-                     <% } else{ %>
-                      value="<%= element._id %>"
-                    <%   }%> >
-                          <%= element.title %> 
-                      </option>
+          <label class="form-label">Category</label>
+          <div class="form-floating mb-3">
+            <select
+              class="form-select"
+              name="category"
+              id="floatingSelect"
+              aria-label="Floating label select example"
+            >
+              <option selected>select</option>
+              <% newCategories.forEach(element => {%>
+                <option <% if(element.title==productShow.category.title){ %>
+                    value="<%= productShow.category._id %>" selected
+             <% } else{ %>
+              value="<%= element._id %>"
+            <%   }%> >
+                  <%= element.title %> 
+              </option> 
+              <%})%> 
+            </select>
+          </div>
 
-                    
-                        <%})%>
-                </select>
-            </div>
-            
+          <label class="form-label">Size</label>
+          <div class="form-floating mb-3">
+            <select
+              class="form-select"
+              name="size"
+              value="<%= productShow.size %>"
+              id="floatingSelect"
+              aria-label="Floating label select example"
+            >
+              <option selected>select</option>
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+            </select>
+          </div>
 
-            <label  class="form-label">Size</label>
-            <div class="form-floating mb-3">
-                
-                <select class="form-select" name="size" value="<%= productShow.size %>" id="floatingSelect"
-                    aria-label="Floating label select example">
-                    <option selected>select</option>
-                    <option value="S">S</option>
-                    <option value="M">M</option>
-                    <option value="L">L</option>
-                </select>
-            </div>
+          <div class="mb-3">
+            <label for="formFileMultiple" class="form-label">Image</label>
+            <input
+              name="productImage"
+              class="form-control bg-dark"
+              type="file"
+              id="formFileMultiple"
+              multiple
+            />
+          </div>
 
-            <div class="mb-3">
-                <label for="formFileMultiple" class="form-label">Image</label>
-                <input name="productImage" class="form-control bg-dark" type="file" id="formFileMultiple" multiple>
-            </div>
-
-            <br>
-            <label  class="form-label">Description</label>
-            <div class="form-floating">
-                <textarea name="description"  class="form-control" placeholder="<%= productShow.description %>"
-                    id="floatingTextarea" style="height: 150px;"></textarea>
-                <label for="floatingTextarea" value="<%= productShow.description %>"></label>
-            </div>
-            <br><br>
-            <button type="submit" class="btn btn-primary">UPDATE</button>
+          <br />
+          <label class="form-label">Description</label>
+          <div class="form-floating">
+            <textarea
+              name="description"
+              class="form-control"
+              placeholder="<%= productShow.description %>"
+              id="floatingTextarea"
+              style="height: 150px"
+            ></textarea>
+            <label
+              for="floatingTextarea"
+              value="<%= productShow.description %>"
+            ></label>
+          </div>
+          <br /><br />
+          <button type="submit" class="btn btn-primary">UPDATE</button>
         </form>
+      </div>
     </div>
+  </div>
 </div>
