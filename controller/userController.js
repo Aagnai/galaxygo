@@ -907,8 +907,6 @@ module.exports = {
                 receipt: id,
               },
               (err, order) => {
-                console.log(err, "errorrrrrrrrr");
-                console.log(order, "orderrrr");
                 let response = {
                   Razorpay: true,
                   razorpayOrderData: order,
@@ -916,8 +914,11 @@ module.exports = {
                 };
                 response.raz_key = process.env.RAZ_KEY_ID;
                 console.log(response);
-
-                res.json(response);
+                Cart.findOneAndRemove({ userId: result.userId }).then(
+                  (result) => {
+                    res.json(response);
+                  }
+                );
               }
             );
           });
@@ -942,10 +943,8 @@ module.exports = {
   // verify payment
   verifyPayment: async (req, res, next) => {
     try {
-      console.log("verify payment");
-      console.log(req.body);
       let razorpayOrderDataId = req.body.response.razorpay_order_id;
-      console.log(razorpayOrderDataId, "id ivde");
+
       let paymentId = req.body.response.razorpay_payment_id;
 
       let paymentSignature = req.body.response.razorpay_signature;
