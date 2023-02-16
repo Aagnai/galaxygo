@@ -544,6 +544,7 @@ module.exports = {
     try {
       oid = req.body.orderId;
       value = req.body.value;
+      console.log("req.body : ",req.body);
       if (value == "Delivered") {
         await Order.updateOne(
           {

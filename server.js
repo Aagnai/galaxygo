@@ -87,12 +87,6 @@ app.use(apphelper.userInViews);
 app.use("/", indexRouter);
 app.use("/admin", adminRouter);
 
-app.use(function (req, res, next) {
-  const error = new Error(`Not found ${req.originalUrl}`);
-  error.status = 404;
-  next(error);
-});
-
 // error handler
 app.use(function (err, req, res, next) {
   console.log(err);

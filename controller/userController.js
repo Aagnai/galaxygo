@@ -1024,10 +1024,11 @@ module.exports = {
 
   getOrderDetails: async (req, res) => {
     try {
+      let id = req.query.id
       let orderDetails = await Order.findOne({
-        userId: req.session.log._id,
+        userId: req.session.log._id,_id:id
       }).populate("products.product");
-      let idOrder = await Order.findOne({ userId: req.session.log._id }).find();
+      let idOrder = await Order.findOne({ userId: req.session.log._id ,_id:id})
       res.render("user/orderDetails", {
         layout: "layouts/layout.ejs",
         orderDetails,

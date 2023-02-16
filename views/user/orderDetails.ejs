@@ -179,10 +179,13 @@
         <section class="order_details section_gap">
           <div class="container">
             <div class="container text-center mt-5">
-              <% if(orderDetails.orderStatus != 'Cancelled' &&
-              orderDetails.orderStatus != 'Delivered'){ %>
+              <p><%=orderDetails.orderStatus%></p>
+              <% if(orderDetails.orderStatus == 'Cancelled' ||
+              orderDetails.orderStatus == 'Delivered'){ %>
+              <p></p>
+              <% }else{ %>
               <button
-                onclick="cancelOrder('<%=idOrder._id%>')"
+                onclick="cancelOrder('<%=idOrder._id%>','Cancelled')"
                 class="btn btn-outline-danger"
               >
                 Cancel Order
@@ -208,38 +211,6 @@
         <%- include('../user/partials/userfooter.ejs') %>
 
         <script>
-          function cancelOrder(orderId) {
-            console.log("cancel order");
-            Swal.fire({
-              title: "Are you sure?",
-              text: "You won't be able to revert this!",
-              icon: "warning",
-              showCancelButton: true,
-              confirmButtonColor: "#3085d6",
-              cancelButtonColor: "#d33",
-              confirmButtonText: "Yes, Cancel Order!",
-              cancelButtonText: "No",
-            }).then((result) => {
-              if (result.isConfirmed) {
-                console.log(orderId);
-                $.ajax({
-                  url: "/cancelOrder/?id=" + orderId,
-                  method: "post",
-                });
-                Swal.fire(
-                  "Cancelled!",
-                  "Your orderd has been Cancelled.",
-                  "success"
-                ).then(() => {
-                  //   window.location = "/myOrder"
-                  window.location.reload();
-                });
-              }
-            });
-          }
-        </script>
-
-        <script>
           const button = document.getElementById("download-button");
 
           function generatePDF() {
@@ -255,3 +226,41 @@
     </div>
   </section>
 </div>
+<script>
+  function cancelOrder(e, i) {
+    const orderId = e;
+    const value = i;
+    console.log(orderId, value);
+
+    $.ajax({
+      url: "/admin/orderStatus",
+      data: {
+        orderId,
+        value,
+      },
+      method: "post",
+      success: (response) => {
+        if (response.status) {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 1000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+
+          Toast.fire({
+            icon: "success",
+            title: "order cancelled",
+          }).then(() => {
+            window.location.reload();
+          });
+        }
+      },
+    });
+  }
+</script>

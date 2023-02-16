@@ -44,7 +44,7 @@ router.post('/editCategory/:id',adminVerifyLogin, admincontroller.postEditCatego
 router.post('/addProducts',adminVerifyLogin, admincontroller.postAddProducts)
 router.post('/editProduct/:id',adminVerifyLogin, admincontroller.postEditProducts)
 router.post('/banner/',adminVerifyLogin,admincontroller.postAddBanner)
-router.post('/orderStatus',adminVerifyLogin,admincontroller.changeTrack)
+router.post('/orderStatus',admincontroller.changeTrack)
 router.get('/orderDetails/:id',adminVerifyLogin,admincontroller.getOrderDetails)
 
 // extra routes

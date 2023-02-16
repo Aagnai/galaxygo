@@ -34,6 +34,7 @@
               <% if (i==0) { %>
               <label
                 ><input
+                  style="text-decoration: none"
                   type="radio"
                   id="<%= address[i]._id %>"
                   value="<%= address[i]._id %>"
@@ -44,6 +45,7 @@
               <% } else { %>
               <label
                 ><input
+                  style="text-decoration: none"
                   type="radio"
                   id="<%= address[i]._id %>"
                   value="<%= address[i]._id %>"
@@ -53,6 +55,7 @@
               <% } %>
               <h2 class="mb-0">
                 <button
+                  style="text-decoration: none"
                   class="btn btn-link btn-block text-left"
                   type="button"
                   data-toggle="collapse"
@@ -83,7 +86,8 @@
         </div>
         <div class="mt-3">
           <a
-            class="addtocart btn btn-outline-primary btn-addtocart"
+            style="text-decoration: none"
+            class="addtocart btn btn-outline-dark btn-addtocart"
             href="/address"
           >
             Add New Address
@@ -142,7 +146,7 @@
                     style="display: block"
                     id="applyBtn"
                     value="Apply Coupon"
-                    class="btn btn-outline-primary"
+                    class="btn btn-outline-dark"
                   />
                 </div>
               </div>
@@ -257,7 +261,7 @@
 
           <div class="row">
             <div class="col-md-12 text-center">
-              <button type="submit" class="btn btn-outline-primary">
+              <button type="submit" class="btn btn-outline-dark">
                 Place an order
               </button>
             </div>
