@@ -100,9 +100,9 @@ app.use(function (err, req, res, next) {
     }
   } else {
     if (err.admin) {
-      res.render("admin/404", { error: "server down" });
+      res.render("admin/500", { error: "server down" });
     } else {
-      res.render("user/404", { error: "server down" });
+      res.render("user/500", { error: "server down" });
     }
   }
 });
