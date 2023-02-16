@@ -45,17 +45,19 @@ module.exports = {
         coup,
         layout: "layouts/layout.ejs",
       });
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
   // defining about
 
   about: (req, res, next) => {
     try {
-      res.render("user/about",{layout: "layouts/layout.ejs"})
+      res.render("user/about", { layout: "layouts/layout.ejs" });
     } catch (error) {
-      
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
@@ -64,8 +66,9 @@ module.exports = {
   signup: (req, res, next) => {
     try {
       userHelper.doSignup(req, res);
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
@@ -81,20 +84,22 @@ module.exports = {
         res.render("user/log", { layout: "layouts/separate.ejs", err });
         err = false;
       }
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
   // defining  register
 
-  register: (req, res) => {
+  register: (req, res, next) => {
     try {
       userHelper.doRegister(req.body, res, () => {
         res.render("user/otp", { layout: "layouts/separate.ejs" });
       });
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
@@ -106,8 +111,9 @@ module.exports = {
         req.session.log = user;
         res.redirect("/");
       });
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
@@ -124,8 +130,9 @@ module.exports = {
           res.redirect("/log");
         }
       });
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
@@ -141,34 +148,25 @@ module.exports = {
       let newproducts;
 
       if (req.query.cate) {
-
         newproducts = await Product.find({ category: req.query.cate })
           .skip((page - 1) * item_per_page)
           .limit(item_per_page);
         console.log(newproducts);
-
       } else if (req.query.q) {
-
         newproducts = await Product.find({ _id: req.query.q })
           .skip((page - 1) * item_per_page)
           .limit(item_per_page);
-
       } else if (req.query.sortHigh) {
-
         newproducts = await Product.find()
           .skip((page - 1) * item_per_page)
           .limit(item_per_page)
           .sort({ price: -1 });
-
       } else if (req.query.sortlow) {
-
         newproducts = await Product.find()
           .skip((page - 1) * item_per_page)
           .limit(item_per_page)
           .sort({ price: 1 });
-
       } else {
-        
         newproducts = await Product.find()
           .skip((page - 1) * item_per_page)
           .limit(item_per_page);
@@ -186,8 +184,9 @@ module.exports = {
         newproducts,
         layout: "layouts/layout.ejs",
       });
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
@@ -206,8 +205,9 @@ module.exports = {
         count,
         layout: "layouts/layout.ejs",
       });
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
@@ -238,14 +238,15 @@ module.exports = {
             }
           }
         });
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
   // Add Wishlist
 
-  addWishlist: async (req, res) => {
+  addWishlist: async (req, res, next) => {
     try {
       let ownerId = req.session.log._id;
       const wish = await Wishlist.findOne({ owner: ownerId });
@@ -277,8 +278,9 @@ module.exports = {
           res.json({ added: true });
         }
       }
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
@@ -299,8 +301,9 @@ module.exports = {
       deleteProduct.save().then(() => {
         res.json("success");
       });
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
@@ -308,7 +311,6 @@ module.exports = {
 
   addCartHome: async (req, res, next) => {
     try {
-      console.log("kweriiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
       const id = req.session.log._id;
       const productId = req.body.productId;
       const user = await Cart.findOne({ owner: req.session.log._id });
@@ -393,8 +395,9 @@ module.exports = {
           }
         }
       }
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
   // show cart
@@ -414,20 +417,20 @@ module.exports = {
                 layout: "layouts/layout.ejs",
                 allCart,
                 user: req.session.log,
-                
+
                 notAvailable: req.flash("notAvailable"),
               });
             } else {
               res.render("user/cartEmpty", {
                 layout: "layouts/layout.ejs",
                 user: req.session.log,
-              
               });
             }
           }
         });
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
@@ -435,7 +438,6 @@ module.exports = {
 
   addcart: async (req, res, next) => {
     try {
-      console.log("keri jose 1");
       let ownerId = req.session.log._id;
       if (!ownerId) {
         res.redirect("/log");
@@ -524,14 +526,15 @@ module.exports = {
           }
         }
       }
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
   // cart delete
 
-  deleteCartProduct: async (req, res) => {
+  deleteCartProduct: async (req, res, next) => {
     try {
       const userId = req.session.log;
       const productId = req.query.productId;
@@ -553,13 +556,14 @@ module.exports = {
       deleteProduct.save().then(() => {
         res.json("success");
       });
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
   // cart product  quantity change
-  cartChangeQuantity: async (req, res) => {
+  cartChangeQuantity: async (req, res, next) => {
     try {
       const { cartId, productId, count } = req.query;
       const product = await Product.findOne({ _id: productId });
@@ -604,14 +608,15 @@ module.exports = {
           res.json();
         });
       }
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
   // user profile
 
-  getprofile: async (req, res) => {
+  getprofile: async (req, res, next) => {
     try {
       const userId = req.session.log._id;
       const userDb = await User.findOne({ _id: userId });
@@ -621,21 +626,23 @@ module.exports = {
         user: req.session.user,
         layout: "layouts/layout.ejs",
       });
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
   // update profile
 
-  updateProfile: async (req, res) => {
+  updateProfile: async (req, res, next) => {
     try {
       await User.findByIdAndUpdate(req.session.log._id, {
         name: req.body.name,
         email: req.body.email,
       }).then(res.redirect("/profile"));
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
@@ -645,14 +652,15 @@ module.exports = {
     try {
       req.session.destroy();
       res.redirect("/");
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
   // show adress
 
-  showAddress: async (req, res) => {
+  showAddress: async (req, res, next) => {
     try {
       const userId = req.session.log._id;
       const userDb = await User.findOne({ _id: userId });
@@ -671,8 +679,9 @@ module.exports = {
         userDb,
         user: req.session.log,
       });
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
@@ -698,8 +707,9 @@ module.exports = {
         user: req.session.log,
         addressErr: req.flash("addressErr"),
       });
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
@@ -735,14 +745,15 @@ module.exports = {
         req.flash("addressErr", "fill full coloms");
         res.redirect("/addaddress");
       }
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
   // delete address
 
-  deleteAddress: async (req, res) => {
+  deleteAddress: async (req, res, next) => {
     try {
       const userId = req.session.log._id;
       const id = req.query.address;
@@ -751,8 +762,9 @@ module.exports = {
         { $pull: { address: { _id: id } } }
       );
       res.json("success");
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
@@ -801,8 +813,9 @@ module.exports = {
           res.redirect("/cart");
         }
       }
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
@@ -920,14 +933,14 @@ module.exports = {
       } else {
         res.json({ chooseAddress: true });
       }
-    } catch (e) {
-      console.log("Error Message :", e);
-      next(e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
   // verify payment
-  verifyPayment: async (req, res) => {
+  verifyPayment: async (req, res, next) => {
     try {
       console.log("verify payment");
       console.log(req.body);
@@ -976,36 +989,39 @@ module.exports = {
           );
         });
       }
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
   // payment   failed
-  paymentFailed: (req, res) => {
+  paymentFailed: (req, res, next) => {
     try {
       res.json({ status: true });
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
   // order complete
 
-  getOrderComplete: async (req, res) => {
+  getOrderComplete: async (req, res, next) => {
     try {
       res.render("user/order_confirm", {
         layout: "layouts/layout.ejs",
         user: req.session.user,
       });
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
   // my order page
 
-  getMyOrder: async (req, res) => {
+  getMyOrder: async (req, res, next) => {
     try {
       let orders = await Order.find({ userId: req.session.log }).sort({
         updatedAt: -1,
@@ -1015,32 +1031,38 @@ module.exports = {
         user: req.session.log,
         orders,
       });
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
   // get order details
 
-  getOrderDetails: async (req, res) => {
+  getOrderDetails: async (req, res, next) => {
     try {
-      let id = req.query.id
+      let id = req.query.id;
       let orderDetails = await Order.findOne({
-        userId: req.session.log._id,_id:id
+        userId: req.session.log._id,
+        _id: id,
       }).populate("products.product");
-      let idOrder = await Order.findOne({ userId: req.session.log._id ,_id:id})
+      let idOrder = await Order.findOne({
+        userId: req.session.log._id,
+        _id: id,
+      });
       res.render("user/orderDetails", {
         layout: "layouts/layout.ejs",
         orderDetails,
         idOrder,
       });
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
   // order cancel
-  cancelOrder: async (req, res) => {
+  cancelOrder: async (req, res, next) => {
     try {
       let orderId = req.session.log;
 
@@ -1056,14 +1078,15 @@ module.exports = {
           );
         });
       });
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 
   // verify coupon
 
-  verifyCoupon: async (req, res) => {
+  verifyCoupon: async (req, res, next) => {
     try {
       let couponcode = req.body.CouponCode;
       let total = req.body.total;
@@ -1141,34 +1164,48 @@ module.exports = {
           res.json({ status: false, couponMsg });
         }
       }
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
-  checkPassword: async (req, res) => {
-    const pass = req.body.nPassword;
-    const userId = req.session.log._id;
+  checkPassword: async (req, res, next) => {
+    try {
+      const pass = req.body.nPassword;
+      const userId = req.session.log._id;
 
-    const user = await User.findOne({ _id: userId });
-    if (user && user.access) {
-      bcrypt.compare(pass, user.nPassword).then((status) => {
-        if (status) {
-          res.json({ stat: true });
-        } else {
-          res.json({ stat: false });
-        }
-      });
-    } else {
-      res.json({ stat: false });
+      const user = await User.findOne({ _id: userId });
+      if (user && user.access) {
+        bcrypt.compare(pass, user.nPassword).then((status) => {
+          if (status) {
+            res.json({ stat: true });
+          } else {
+            res.json({ stat: false });
+          }
+        });
+      } else {
+        res.json({ stat: false });
+      }
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
-  updatePass: async (req, res) => {
-    let pass = req.body.nPassword;
-    pass = await bcrypt.hash(pass, 10);
-    const userId = req.session.log._id;
+  updatePass: async (req, res, next) => {
+    try {
+      let pass = req.body.nPassword;
+      pass = await bcrypt.hash(pass, 10);
+      const userId = req.session.log._id;
 
-    await User.findOneAndUpdate({ _id: userId }, { $set: { nPassword: pass } });
-    res.json({ status: true });
+      await User.findOneAndUpdate(
+        { _id: userId },
+        { $set: { nPassword: pass } }
+      );
+      res.json({ status: true });
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
+    }
   },
 
   // search
@@ -1199,8 +1236,9 @@ module.exports = {
       });
 
       res.send({ id: sResult });
-    } catch (e) {
-      console.log("Error Message :", e);
+    } catch (error) {
+      console.log("Error Message :", error);
+      next(error);
     }
   },
 };

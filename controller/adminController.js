@@ -40,6 +40,8 @@ module.exports = {
       });
     } catch (error) {
       console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
     }
   },
 
@@ -53,6 +55,8 @@ module.exports = {
         });
     } catch (error) {
       console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
     }
   },
   unblockuser: async (req, res, next) => {
@@ -65,10 +69,12 @@ module.exports = {
         });
     } catch (error) {
       console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
     }
   },
 
-  deleteUser: async (req, res) => {
+  deleteUser: async (req, res, next) => {
     try {
       const id = req.query.id;
 
@@ -81,6 +87,8 @@ module.exports = {
       });
     } catch (error) {
       console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
     }
   },
 
@@ -93,6 +101,8 @@ module.exports = {
       });
     } catch (error) {
       console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
     }
   },
   viewCategory: async (req, res, next) => {
@@ -104,6 +114,8 @@ module.exports = {
       });
     } catch (error) {
       console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
     }
   },
   addCategory: async (req, res, next) => {
@@ -136,6 +148,8 @@ module.exports = {
       }
     } catch (error) {
       console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
     }
   },
 
@@ -145,10 +159,6 @@ module.exports = {
 
       const err = req.flash("err");
       const oneUser = await category.findOne({ _id: iid });
-      if (!oneUser) {
-        next(new Error("Error", 404));
-        return;
-      }
       res.render("admin/editCategory", {
         layout: "layouts/adminLayout.ejs",
         oneUser,
@@ -156,166 +166,212 @@ module.exports = {
       });
     } catch (error) {
       console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
     }
   },
 
   postEditCategory: async (req, res) => {
-    const id = req.params.id;
-    const updatedName = req.body.title;
-    const image = req.files.categoryImage;
-    const cat = { title: updatedName };
-    if (image) {
-      const imageUrl = image[0].path.substring(6);
-      cat.categoryImage = imageUrl;
-    }
-    category
-      .findOneAndUpdate(
-        { _id: id },
-        {
-          $set: {
-            title: req.body.title,
-
-            categoryImage: cat.categoryImage,
-          },
-        }
-      )
-      .then((newOne) => {
-        res.redirect("/admin/viewCategory");
-      })
-      .catch((err) => {
-        if (err.code === 11000) {
-          req.flash("err", "! Duplicate value !");
-          res.redirect("/admin/editCategory?id=" + id);
-        }
-      });
-  },
-
-  deleteCategory: async (req, res) => {
-    const id = req.query.id;
-    const deletecat = await category.findOneAndUpdate(
-      { _id: id },
-      { $set: { access: false } }
-    );
-    deletecat.save().then(() => {
-      res.json("success");
-    });
-  },
-
-  productManagement: async (req, res) => {
-    const showProducts = await Products.find({ access: { $ne: false } }).populate("category");
-    res.render("admin/productManagement", {
-      layout: "layouts/adminLayout.ejs",
-      showProducts,
-    });
-  },
-
-  getAddProducts: async (req, res) => {
-    const categories = await category.find();
-    res.render("admin/addProducts", {
-      layout: "layouts/adminLayout.ejs",
-      categories,
-    });
-  },
-
-  postAddProducts: (req, res) => {
-    const image = req.files.productImage;
-    const img = [];
-    image.forEach((el, i, arr) => {
-      img.push(arr[i].path.substring(6));
-    });
-
-    const products = new Products({
-      name: req.body.name,
-      brand: req.body.brand,
-      price: parseInt(req.body.price),
-      stock: parseInt(req.body.stock),
-      category: req.body.category.trim(),
-      size: req.body.size,
-      productImage: img,
-      description: req.body.description,
-      discount: req.body.discount,
-    });
-    products.save((error, doc) => {
-      if (error) {
-        res.redirect("/admin/addProducts");
-      } else {
-        res.redirect("/admin/viewProducts");
+    try {
+      const id = req.params.id;
+      const updatedName = req.body.title;
+      const image = req.files.categoryImage;
+      const cat = { title: updatedName };
+      if (image) {
+        const imageUrl = image[0].path.substring(6);
+        cat.categoryImage = imageUrl;
       }
-    });
+      category
+        .findOneAndUpdate(
+          { _id: id },
+          {
+            $set: {
+              title: req.body.title,
+
+              categoryImage: cat.categoryImage,
+            },
+          }
+        )
+        .then((newOne) => {
+          res.redirect("/admin/viewCategory");
+        })
+        .catch((err) => {
+          if (err.code === 11000) {
+            req.flash("err", "! Duplicate value !");
+            res.redirect("/admin/editCategory?id=" + id);
+          }
+        });
+    } catch (error) {
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
+    }
   },
 
-  getEditProducts: async (req, res) => {
-    const idproducts = req.query.id;
-    const newCategories = await category.find();
-    const productShow = await Products.findOne({ _id: idproducts }).populate(
-      "category"
-    );
-
-    res.render("admin/editProduct", {
-      layout: "layouts/adminLayout.ejs",
-      productShow,
-      newCategories,
-    });
+  deleteCategory: async (req, res, next) => {
+    try {
+      const id = req.query.id;
+      const deletecat = await category.findOneAndUpdate(
+        { _id: id },
+        { $set: { access: false } }
+      );
+      deletecat.save().then(() => {
+        res.json("success");
+      });
+    } catch (error) {
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
+    }
   },
 
-  postEditProducts: async (req, res) => {
-    const id = req.params.id;
+  productManagement: async (req, res, next) => {
+    try {
+      const showProducts = await Products.find({
+        access: { $ne: false },
+      }).populate("category");
+      res.render("admin/productManagement", {
+        layout: "layouts/adminLayout.ejs",
+        showProducts,
+      });
+    } catch (error) {
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
+    }
+  },
 
-    const image = req.files.productImage;
-    const product = {
-      name: req.body.name,
-      brand: req.body.brand,
-      price: req.body.price,
-      stock: req.body.stock,
-      category: req.body.category,
-      description: req.body.description,
-      discount: req.body.discount,
-      size: req.body.size,
-    };
-    if (image) {
+  getAddProducts: async (req, res, next) => {
+    try {
+      const categories = await category.find();
+      res.render("admin/addProducts", {
+        layout: "layouts/adminLayout.ejs",
+        categories,
+      });
+    } catch (error) {
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
+    }
+  },
+
+  postAddProducts: (req, res, next) => {
+    try {
+      const image = req.files.productImage;
       const img = [];
       image.forEach((el, i, arr) => {
         img.push(arr[i].path.substring(6));
       });
 
-      await Products.updateOne(
-        { _id: id },
-        {
-          $set: {
-            name: product.name,
-            brand: product.brand,
-            price: product.price,
-            stock: product.stock,
-            category: product.category.trim(),
-            size: product.size,
-            productImage: img,
-            description: product.description,
-          },
+      const products = new Products({
+        name: req.body.name,
+        brand: req.body.brand,
+        price: parseInt(req.body.price),
+        stock: parseInt(req.body.stock),
+        category: req.body.category.trim(),
+        size: req.body.size,
+        productImage: img,
+        description: req.body.description,
+        discount: req.body.discount,
+      });
+      products.save((error, doc) => {
+        if (error) {
+          res.redirect("/admin/addProducts");
+        } else {
+          res.redirect("/admin/viewProducts");
         }
-      );
-    } else {
-      await Products.updateOne(
-        { _id: id },
-        {
-          $set: {
-            name: product.name,
-            brand: product.brand,
-            price: product.price,
-            stock: product.stock,
-            category: product.category.trim(),
-            size: product.size,
-            description: product.description,
-          },
-        }
-      );
+      });
+    } catch (error) {
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
     }
+  },
 
-    res.redirect("/admin/viewProducts");
+  getEditProducts: async (req, res, next) => {
+    try {
+      const idproducts = req.query.id;
+      const newCategories = await category.find();
+      const productShow = await Products.findOne({ _id: idproducts }).populate(
+        "category"
+      );
+
+      res.render("admin/editProduct", {
+        layout: "layouts/adminLayout.ejs",
+        productShow,
+        newCategories,
+      });
+    } catch (error) {
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
+    }
+  },
+
+  postEditProducts: async (req, res, next) => {
+    try {
+      const id = req.params.id;
+
+      const image = req.files.productImage;
+      const product = {
+        name: req.body.name,
+        brand: req.body.brand,
+        price: req.body.price,
+        stock: req.body.stock,
+        category: req.body.category,
+        description: req.body.description,
+        discount: req.body.discount,
+        size: req.body.size,
+      };
+      if (image) {
+        const img = [];
+        image.forEach((el, i, arr) => {
+          img.push(arr[i].path.substring(6));
+        });
+
+        await Products.updateOne(
+          { _id: id },
+          {
+            $set: {
+              name: product.name,
+              brand: product.brand,
+              price: product.price,
+              stock: product.stock,
+              category: product.category.trim(),
+              size: product.size,
+              productImage: img,
+              description: product.description,
+            },
+          }
+        );
+      } else {
+        await Products.updateOne(
+          { _id: id },
+          {
+            $set: {
+              name: product.name,
+              brand: product.brand,
+              price: product.price,
+              stock: product.stock,
+              category: product.category.trim(),
+              size: product.size,
+              description: product.description,
+            },
+          }
+        );
+      }
+
+      res.redirect("/admin/viewProducts");
+    } catch (error) {
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
+    }
   },
 
   // product delete
 
-  deleteProducts: async (req, res) => {
+  deleteProducts: async (req, res, next) => {
     try {
       const id = req.query.id;
       const deleteProduct = await Products.findOneAndUpdate(
@@ -325,10 +381,14 @@ module.exports = {
       deleteProduct.save().then(() => {
         res.json("success");
       });
-    } catch (error) {}
+    } catch (error) {
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
+    }
   },
 
-  getBanner: async (req, res) => {
+  getBanner: async (req, res, next) => {
     try {
       let banner = await Banner.find({ delete: { $ne: true } }).sort({
         updatedAt: -1,
@@ -338,10 +398,14 @@ module.exports = {
         banner,
         bannerView: true,
       });
-    } catch (error) {}
+    } catch (error) {
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
+    }
   },
 
-  getAddBanner: (req, res) => {
+  getAddBanner: (req, res, next) => {
     try {
       const err = req.flash("err");
       res.render("admin/add_banner", {
@@ -350,10 +414,14 @@ module.exports = {
         bannerView: true,
         err,
       });
-    } catch (error) {}
+    } catch (error) {
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
+    }
   },
 
-  postAddBanner: async (req, res) => {
+  postAddBanner: async (req, res, next) => {
     try {
       const imageUrl = req.files;
       const { head1, head2, route, description } = req.body;
@@ -379,11 +447,15 @@ module.exports = {
             }
           });
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
+    }
   },
   // banner delete
 
-  deleteBanner: async (req, res) => {
+  deleteBanner: async (req, res, next) => {
     try {
       const id = req.params.id;
       const deleteBanner = await Banner.findOneAndUpdate(
@@ -393,12 +465,16 @@ module.exports = {
       deleteBanner.save().then(() => {
         res.json("success");
       });
-    } catch (error) {}
+    } catch (error) {
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
+    }
   },
 
   // get coupon
 
-  getCoupon: async (req, res) => {
+  getCoupon: async (req, res, next) => {
     try {
       const coupons = await Coupon.find().sort({ timeStamp: -1 });
       res.render("admin/coupon", {
@@ -406,12 +482,16 @@ module.exports = {
         coupons,
         couponView: true,
       });
-    } catch (error) {}
+    } catch (error) {
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
+    }
   },
 
   // get add coupon page
 
-  getAddCoupon: async (req, res) => {
+  getAddCoupon: async (req, res, next) => {
     try {
       res.render("admin/add-coupon", {
         layout: "layouts/adminLayout.ejs",
@@ -419,11 +499,15 @@ module.exports = {
         couponView: true,
         couponExistErr: req.flash("couponExistErr"),
       });
-    } catch (error) {}
+    } catch (error) {
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
+    }
   },
 
   // post add coupoon
-  postAddCoupon: async (req, res) => {
+  postAddCoupon: async (req, res, next) => {
     try {
       const {
         code,
@@ -468,23 +552,31 @@ module.exports = {
         req.flash("addCouponErr", "fill full coloms");
         res.redirect("/admin/addCoupon");
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
+    }
   },
 
   // delete coupon
 
-  deleteCoupon: (req, res) => {
+  deleteCoupon: (req, res, next) => {
     try {
       const coupenId = req.query.id;
       Coupon.findByIdAndRemove(coupenId).then((coupon) => {
         res.json("success");
       });
-    } catch (error) {}
+    } catch (error) {
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
+    }
   },
 
   // active coupon
 
-  couponActive: async (req, res) => {
+  couponActive: async (req, res, next) => {
     try {
       coupenId = req.query.id;
       await Coupon.updateOne(
@@ -493,12 +585,16 @@ module.exports = {
       ).then((result) => {
         res.redirect("/admin/coupon");
       });
-    } catch (error) {}
+    } catch (error) {
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
+    }
   },
 
   // block coupon
 
-  couponBlock: async (req, res) => {
+  couponBlock: async (req, res, next) => {
     try {
       coupenId = req.query.id;
       await Coupon.updateOne(
@@ -507,11 +603,15 @@ module.exports = {
       ).then((result) => {
         res.redirect("/admin/coupon");
       });
-    } catch (error) {}
+    } catch (error) {
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
+    }
   },
 
   //  order page
-  ordersView: async (req, res) => {
+  ordersView: async (req, res, next) => {
     try {
       let order = await Order.find().sort({ updatedAt: -1 }).populate("userId");
       Object.values(order);
@@ -520,12 +620,16 @@ module.exports = {
         order,
         user: req.session.log,
       });
-    } catch (error) {}
+    } catch (error) {
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
+    }
   },
 
   // get order details
 
-  getOrderDetails: async (req, res) => {
+  getOrderDetails: async (req, res, next) => {
     try {
       let order = await Order.findOne({ _id: req.params.id }).populate(
         "products.product"
@@ -535,16 +639,20 @@ module.exports = {
         order,
         ordersView: true,
       });
-    } catch (error) {}
+    } catch (error) {
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
+    }
   },
 
   //  change order status
 
-  changeTrack: async (req, res) => {
+  changeTrack: async (req, res, next) => {
     try {
       oid = req.body.orderId;
       value = req.body.value;
-      console.log("req.body : ",req.body);
+      console.log("req.body : ", req.body);
       if (value == "Delivered") {
         await Order.updateOne(
           {
@@ -575,7 +683,11 @@ module.exports = {
           res.json({ status: true });
         });
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
+    }
   },
 
   // bar chart details
@@ -721,6 +833,7 @@ module.exports = {
         res.json({ status: true, sales: salesData });
       }
     } catch (error) {
+      console.log("Error Message :", error);
       error.admin = true;
       next(error);
     }
@@ -728,7 +841,7 @@ module.exports = {
 
   // get sales report
 
-  salesReport: async (req, res) => {
+  salesReport: async (req, res, next) => {
     try {
       const salesReport = await Order.aggregate([
         {
@@ -755,12 +868,14 @@ module.exports = {
         salesReport,
       });
     } catch (error) {
-      res.render("admin/error", { layout: "layouts/adminLayout.ejs" });
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
     }
   },
 
   // month report
-  MonthReport: async (req, res) => {
+  MonthReport: async (req, res, next) => {
     try {
       const months = [
         "January",
@@ -800,12 +915,14 @@ module.exports = {
         salesReport: newSalesReport,
       });
     } catch (error) {
-      res.render("admin/error", { layout: "layouts/adminLayout.ejs" });
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
     }
   },
 
   // year report
-  yearReport: async (req, res) => {
+  yearReport: async (req, res, next) => {
     try {
       const salesReport = await Order.aggregate([
         {
@@ -832,13 +949,15 @@ module.exports = {
         salesReport,
       });
     } catch (error) {
-      res.render("admin/error", { layout: "layouts/adminLayout.ejs" });
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
     }
   },
 
   // pie chart details
 
-  pieChart: async (req, res) => {
+  pieChart: async (req, res, next) => {
     try {
       const cancel = await Order.find({ orderStatus: "Cancelled" }).count();
       const Delivered = await Order.find({ orderStatus: "Delivered" }).count();
@@ -850,12 +969,14 @@ module.exports = {
 
       res.json({ data });
     } catch (error) {
-      res.render("admin/error", { layout: "layouts/adminLayout.ejs" });
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
     }
   },
 
   //  dashboard page
-  dashboardView: async (req, res) => {
+  dashboardView: async (req, res, next) => {
     try {
       let order = await Order.find();
       let orderCount = order.length;
@@ -898,21 +1019,21 @@ module.exports = {
         dashboard: true,
       });
     } catch (error) {
-      res.render("admin/error");
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
     }
   },
 
   // log out
-  logoutButton: (req, res) => {
+  logoutButton: (req, res, next) => {
     try {
       req.session.destroy();
       res.redirect("/admin");
     } catch (error) {
-      res.render("admin/error");
+      console.log("Error Message :", error);
+      error.admin = true;
+      next(error);
     }
-  },
-
-  show500: (req, res) => {
-    res.render("admin/500", { layout: "layouts/adminLayout.ejs" });
   },
 };
