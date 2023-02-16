@@ -35,12 +35,12 @@
                   </div>
                 </td>
                 <td class="quantity__item">
-                  <div class="quantity">
-                    <div class="pro-qty-2">
+                  <div class="quantity w-50">
+                    
                       <a
                         style="cursor: pointer"
                         onclick="changeQuantity('<%= allCart._id %>','<%= element.product._id %>','1')"
-                        >+</a
+                        ><h3>+</h3></a
                       >
 
                       <input
@@ -56,16 +56,16 @@
                       <a
                         style="cursor: pointer"
                         onclick="changeQuantity('<%= allCart._id %>','<%= element.product._id %>','-1')"
-                        >-</a
+                        ><h2>_</h2></a
                       >
                       <% } else { %>
                       <a
                         style="visibility: hidden"
                         onclick="changeQuantity('<%= allCart._id %>','<%= element.product._id %>','-1')"
-                        >-</a
+                        ><h2>_</h2></a
                       >
                       <% } %>
-                    </div>
+                    
                   </div>
                 </td>
                 <td class="cart__price">₹ <%= element.totalPrice %></td>
