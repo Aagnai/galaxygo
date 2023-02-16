@@ -4,14 +4,9 @@ const admincontroller = require('../controller/adminController')
 const {adminVerifyLogin}=require('../middleware/adminVerifylogin')
 
 
-router.get('/', admincontroller.getAdminlogin)
-router.get('/500',admincontroller.show500)
-
-
 // get routes
 
-
-
+router.get('/', admincontroller.getAdminlogin)
 router.get('/users',adminVerifyLogin, admincontroller.userManagement)
 router.get('/viewCategory',adminVerifyLogin, admincontroller.categoryManagement)
 router.get('/addCategory',adminVerifyLogin, admincontroller.viewCategory)
