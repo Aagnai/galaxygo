@@ -3,7 +3,6 @@ const token = process.env.Token
 const AccountSID = process.env.AccountSID
 const client = require('twilio')(AccountSID, token);
 function sendOtp(mob) {
-    console.log("here undeeeeee",mob);
     client.verify.v2.services(serviceId)
         .verifications
         .create({ to: `+91${mob}`, channel: 'sms' })
